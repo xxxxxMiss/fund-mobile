@@ -1,0 +1,53 @@
+.page-rank {
+  height: 100%;
+  overflow: hidden;
+  .scroller-container {
+    height: calc(100% - 95px);
+    overflow: auto;
+  }
+  .list-item {
+    display: flex;
+    padding: 10px 15px;
+    border: 1px solid #eee;
+    align-items: center;
+
+    .first-col {
+      flex: 3;
+      overflow: hidden;
+    }
+    .latest-value,
+    .latest-rate {
+      flex: 1;
+      text-align: center;
+    }
+    .name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .code {
+      color: #999;
+      padding-top: 4px;
+    }
+  }
+
+  .list-header {
+    display: flex;
+    background-color: #fff;
+    padding: 10px 15px;
+    .filter-type {
+      flex: 3;
+    }
+    .latest-value,
+    .filter-date {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  :global {
+    .am-list-header {
+      padding: 0;
+    }
+  }
+}

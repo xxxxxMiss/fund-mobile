@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Lock
+yarn.lock
+npm-lock.json
+
+# Dist folder
+dist
+
+# Coverage support
+coverage
+*.lcov
+.nyc_output
+.vscode
+
+# Intellij idea
+*.iml
+.idea
+
+# OSX
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+app/public/
+app/web/**/.umi*
+.umi*
+config/manifest.json
+logs/
+run/

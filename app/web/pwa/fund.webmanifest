@@ -1,0 +1,15 @@
+{
+  "name": "Fund Web App",
+  "short_name": "FUND",
+  "description": "Progressive Web App that watching the change of fund.",
+  "icons": [
+    {
+      "src": "icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ],
+  "display": "fullscreen",
+  "theme_color": "#B12A34",
+  "background_color": "#B12A34"
+}
