@@ -105,8 +105,14 @@ export const DATERANGE = [
     label: '近一年',
     value: '1n',
   },
-  {
-    label: '近三年',
-    value: '3n',
-  },
 ]
+
+export const FIELDS = {
+  r: 'dayGrowth',
+  z: 'lastWeekGrowth',
+  '1y': 'lastMonthGrowth',
+  '3y': 'lastThreeMonthsGrowth',
+  '6y': 'lastSixMonthsGrowth',
+  '1n': 'lastYearGrowth',
+  jn: 'thisYearGrowth',
+}

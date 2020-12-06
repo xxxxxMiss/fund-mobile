@@ -37,17 +37,20 @@ exports.parseNavLang = ctx => {
 
 const path = require('path')
 const request = async (ctx, { url, data, method }) => {
-  url = `https://api.yiduu.com/${path.join('v1', url)}`
+  url = `https://api.doctorxiong.club/${path.join('v1', url)}`
   const res = await ctx.curl(url, {
     data,
     dataType: 'json',
     contentType: 'json',
     method,
     headers: {
-      Token: '217a71ac3b052446e98d3e52e512d006',
+      // Token: '217a71ac3b052446e98d3e52e512d006',
+      token: 'ykAIlw6j9d',
     },
   })
-  console.log('======2222', res)
+  if (process.env.NODE_ENV != 'production') {
+    console.log('[Request Response]: ', res)
+  }
   if (res.status === 200) {
     return res.data
   }

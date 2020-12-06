@@ -8,16 +8,17 @@ const webRoot = resolve(__dirname, '..')
 export default {
   extraBabelPlugins: [
     [
-      join(__dirname, '../plugins', 'babel-plugin-style-bind'),
+      join(webRoot, 'plugins/babel-plugin-style-bind'),
       {
         varName: 'sbx',
         includes: [
-          join(__dirname, '../pages/**/*.{jsx,tsx}'),
-          join(__dirname, '../layouts/*.{jsx,tsx}'),
+          join(webRoot, 'pages/**/*.{jsx,tsx}'),
+          join(webRoot, 'layouts/*.{jsx,tsx}'),
         ],
       },
     ],
   ],
+  plugins: [join(webRoot, 'plugins/umi-plugin-register-service-worker.js')],
   ssr: {
     devServerRender: true,
   },
@@ -53,18 +54,18 @@ export default {
   links: [{ rel: 'manifest', href: '/fund.webmanifest' }],
   chainWebpack(config) {
     config.plugin('AntdDayjsWebpackPlugin').use(AntdDayjsWebpackPlugin)
-    config.plugin('workbox-inject').use(InjectManifest, [
-      {
-        swSrc: join(__dirname, '../pwa/service-worker.js'),
-        swDest: 'sw.js',
-        exclude: [/\.map$/, /favicon\.ico$/, /^manifest.*\.js?$/],
-      },
-    ])
-    // config.plugin('workbox-gensw').use(GenerateSW, [
+    // config.plugin('workbox-inject').use(InjectManifest, [
     //   {
-    //     swDest: 'test-sw.js',
+    //     swSrc: join(__dirname, '../pwa/service-worker.js'),
+    //     swDest: 'sw.js',
+    //     exclude: [/\.map$/, /favicon\.ico$/, /^manifest.*\.js?$/],
     //   },
     // ])
+    config.plugin('workbox-gensw').use(GenerateSW, [
+      {
+        swDest: 'sw.js',
+      },
+    ])
     config.plugin('CopyPlugin').use(CopyPlugin, [
       {
         patterns: [

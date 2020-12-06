@@ -2,8 +2,12 @@ const axios = require('axios')
 // import { message } from 'antd'
 
 const request = (module.exports = function request(config) {
+  const isServer = typeof window === 'undefined'
   const CONFIG = {
-    baseURL: process.env.axiosBaseURL,
+    baseURL: isServer ? process.env.ssrAxiosBaseURL : process.env.axiosBaseURL,
+  }
+  if (process.env.NODE_ENV != 'production') {
+    CONFIG.baseURL = process.env.axiosBaseURL
   }
   const instance = axios.create()
 

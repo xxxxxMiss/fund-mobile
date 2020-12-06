@@ -1,63 +1,73 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { connect, useIntl, getLocale, setLocale } from 'umi'
-import { ListView, Picker, List } from 'antd-mobile'
+import { Picker } from 'antd-mobile'
 import { post } from 'utils/request'
-import { FUNDTYPES, DATERANGE } from 'utils/config'
-
-function MyBody(props) {
-  return (
-    <div className="am-list-body my-body">
-      <span style={{ display: 'none' }}>you can custom body wrap element</span>
-      {props.children}
-    </div>
-  )
-}
+import { FUNDTYPES, DATERANGE, FIELDS } from 'utils/config'
+import BScroll from '@better-scroll/core'
+import Pullup from '@better-scroll/pull-up'
 
 const Home = props => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
   const [pageIndex, setPageIndex] = useState(1)
   const [fundType, setFundType] = useState('hh')
   const [sort, setSort] = useState('3y')
-  const [dataSource, setDataSoucre] = useState(() => {
-    const ds = new ListView.DataSource({
-      rowHasChanged: (row1, row2) => row1 !== row2,
-    })
-    return ds
-  })
+  const scrollerRef = useRef(null)
+  const bsRef = useRef(null)
+  const helperRef = useRef({ init: true })
+  const [list, setList] = useState(props.rank)
 
   useEffect(() => {
-    setDataSoucre(prev => {
-      return prev.cloneWithRows(props.rank)
-    })
-  }, [pageIndex, fundType, sort])
+    BScroll.use(Pullup)
+    const bs = (bsRef.current = new BScroll(scrollerRef.current, {
+      pullUpLoad: true,
+    }))
 
-  const renderRow = rowData => {
-    return (
-      <div className={sbx('list-item')}>
-        <div className={sbx('first-col')}>
-          <div className={sbx('name')}>{rowData.name}</div>
-          <div className={sbx('code')}>{rowData.code}</div>
-        </div>
-        <div className={sbx('latest-value')}>{rowData.expectWorth}</div>
-        <div className={sbx('latest-rate')}>{rowData.expectGrowth}</div>
-      </div>
+    bs.on('pullingUp', () => {
+      setPageIndex(prev => prev + 1)
+    })
+    return () => {
+      bs.destroy()
+    }
+  }, [])
+
+  const fetchList = (prevList, { pageIndex, fundType }) => {
+    return post('/api/v1/fund/rank', { pageIndex, fundType: [fundType] }).then(
+      res => {
+        setList(prevList.concat(res?.rank ?? []))
+        bsRef.current.finishPullUp()
+        bsRef.current.refresh()
+      }
     )
   }
+  useEffect(() => {
+    if (helperRef.current.init) return
+    fetchList(list, { pageIndex, fundType })
+  }, [pageIndex])
 
-  const renderHeader = () => {
+  useEffect(() => {
+    if (helperRef.current.init) return
+    fetchList([], { pageIndex: 1, fundType })
+  }, [fundType])
+
+  useEffect(() => {
+    helperRef.current.init = false
+  }, [])
+
+  const renderRow = row => {
+    let rate = row[FIELDS[sort]]
+    let fmtRate = '--'
+    if (rate) {
+      rate = Number(rate).toFixed(2)
+      fmtRate = `${rate > 0 ? '+' : ''}${rate}%`
+    }
+    const color = !rate ? '' : rate > 0 ? 'red' : 'green'
     return (
-      <div className={sbx('list-header')}>
-        <div className={sbx('filter-type')}>
-          <Picker data={FUNDTYPES} cols={1} onChange={val => setFundType(val)}>
-            <span>混合型</span>
-          </Picker>
+      <div className={sbx('list-item')} key={row.code}>
+        <div className={sbx('first-col')}>
+          <div className={sbx('name')}>{row.name}</div>
+          <div className={sbx('code')}>{row.code}</div>
         </div>
-        <div className={sbx('latest-value')}>最新净值</div>
-        <div className={sbx('filter-date')}>
-          <Picker data={DATERANGE} cols={1} onChange={val => setSort(val)}>
-            <span>近三月</span>
-          </Picker>
+        <div className={sbx('latest-value')}>{row.netWorth}</div>
+        <div className={sbx('latest-rate')} style={{ color }}>
+          {fmtRate}
         </div>
       </div>
     )
@@ -65,27 +75,46 @@ const Home = props => {
 
   return (
     <div className={sbx('page-rank')}>
-      <ListView
-        dataSource={dataSource}
-        renderHeader={renderHeader}
-        renderRow={renderRow}
-        pageSize={10}
-        onScroll={() => {
-          console.log('scroll')
-        }}
-        scrollRenderAheadDistance={500}
-        onEndReached={() => {
-          console.log('----end')
-        }}
-        onEndReachedThreshold={100}
-        onLayout={(...args) => console.log('-----layout', args)}
-        useBodyScroll
-      />
+      <div className={sbx('list-header')}>
+        <div className={sbx('filter-type')}>
+          <Picker
+            data={FUNDTYPES}
+            cols={1}
+            onChange={val => setFundType(val[0])}
+            onOk={val => setFundType(val[0])}
+            value={[fundType]}
+          >
+            <span>{FUNDTYPES.find(t => t.value === fundType)?.label}</span>
+          </Picker>
+        </div>
+        <div className={sbx('latest-value')}>最新净值</div>
+        <div className={sbx('filter-date')}>
+          <Picker
+            data={DATERANGE}
+            cols={1}
+            onChange={val => setSort(val[0])}
+            onOk={val => setSort(val[0])}
+            value={[sort]}
+          >
+            <span>{DATERANGE.find(t => t.value === sort)?.label}</span>
+          </Picker>
+        </div>
+      </div>
+      <div className={sbx('wrapper')} ref={scrollerRef}>
+        <div className={sbx('scroller-container')}>
+          {list.map(item => {
+            return renderRow(item)
+          })}
+        </div>
+      </div>
     </div>
   )
 }
 Home.getInitialProps = async ({}) => {
-  const res = await post('/api/v1/fund/rank')
+  const res = await post('/api/v1/fund/rank', {
+    fundType: ['hh'],
+    sort: '3y',
+  })
   return { rank: res?.rank ?? [] }
 }
 
