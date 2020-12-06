@@ -1,12 +1,14 @@
 import { TabBar, NavBar, Icon } from 'antd-mobile'
+import { useHistory } from 'umi'
 
 export default function AppLayout(props) {
+  const history = useHistory()
   return (
     <div className={sbx('app-layout')}>
       <NavBar
         mode="light"
         icon={<Icon type="left" />}
-        onLeftClick={() => console.log('onLeftClick')}
+        onLeftClick={() => history.goBack()}
         rightContent={[
           <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
           <Icon key="1" type="ellipsis" />,

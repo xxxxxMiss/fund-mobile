@@ -4,6 +4,8 @@ import { post } from 'utils/request'
 import { FUNDTYPES, DATERANGE, FIELDS } from 'utils/config'
 import BScroll from '@better-scroll/core'
 import Pullup from '@better-scroll/pull-up'
+import { Link } from 'umi'
+import { fmtRate } from 'utils/format'
 
 const Home = props => {
   const [pageIndex, setPageIndex] = useState(1)
@@ -18,6 +20,7 @@ const Home = props => {
     BScroll.use(Pullup)
     const bs = (bsRef.current = new BScroll(scrollerRef.current, {
       pullUpLoad: true,
+      click: true,
     }))
 
     bs.on('pullingUp', () => {
@@ -28,7 +31,7 @@ const Home = props => {
     }
   }, [])
 
-  const fetchList = (prevList, { pageIndex, fundType }) => {
+  const fetchList = (prevList = [], { pageIndex, fundType }) => {
     return post('/api/v1/fund/rank', { pageIndex, fundType: [fundType] }).then(
       res => {
         setList(prevList.concat(res?.rank ?? []))
@@ -51,25 +54,28 @@ const Home = props => {
     helperRef.current.init = false
   }, [])
 
+  // TODO: bug fix
+  useEffect(() => {
+    setList(props.rank)
+  }, [props.rank])
+
   const renderRow = row => {
-    let rate = row[FIELDS[sort]]
-    let fmtRate = '--'
-    if (rate) {
-      rate = Number(rate).toFixed(2)
-      fmtRate = `${rate > 0 ? '+' : ''}${rate}%`
-    }
-    const color = !rate ? '' : rate > 0 ? 'red' : 'green'
+    const { text, color } = fmtRate(row[FIELDS[sort]])
     return (
-      <div className={sbx('list-item')} key={row.code}>
+      <Link
+        className={sbx('list-item')}
+        key={row.code}
+        to={`/detail?code=${row.code}`}
+      >
         <div className={sbx('first-col')}>
           <div className={sbx('name')}>{row.name}</div>
           <div className={sbx('code')}>{row.code}</div>
         </div>
         <div className={sbx('latest-value')}>{row.netWorth}</div>
         <div className={sbx('latest-rate')} style={{ color }}>
-          {fmtRate}
+          {text}
         </div>
-      </div>
+      </Link>
     )
   }
 
@@ -102,7 +108,7 @@ const Home = props => {
       </div>
       <div className={sbx('wrapper')} ref={scrollerRef}>
         <div className={sbx('scroller-container')}>
-          {list.map(item => {
+          {(list || []).map(item => {
             return renderRow(item)
           })}
         </div>

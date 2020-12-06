@@ -21,6 +21,7 @@ export default {
   plugins: [join(webRoot, 'plugins/umi-plugin-register-service-worker.js')],
   ssr: {
     devServerRender: true,
+    forceInitial: false,
   },
   hash: true,
   outputPath: '../public',
