@@ -9,6 +9,6 @@ export default {
     },
   },
   define: {
-    'process.env.axiosBaseURL': 'http://localhost:8000',
+    'process.env.axiosBaseURL': 'http://localhost:8000/api',
   },
 }

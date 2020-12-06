@@ -42,7 +42,7 @@ FundDetail.getInitialProps = async ({ isServer, history }) => {
   } else {
     code = new URLSearchParams(window.location.search).get('code')
   }
-  const res = await get('/api/v1/fund/detail', {
+  const res = await get('/v1/fund/detail', {
     params: {
       code,
     },

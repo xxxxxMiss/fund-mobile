@@ -32,7 +32,7 @@ const Home = props => {
   }, [])
 
   const fetchList = (prevList = [], { pageIndex, fundType }) => {
-    return post('/api/v1/fund/rank', { pageIndex, fundType: [fundType] }).then(
+    return post('/v1/fund/rank', { pageIndex, fundType: [fundType] }).then(
       res => {
         setList(prevList.concat(res?.rank ?? []))
         bsRef.current.finishPullUp()
@@ -117,7 +117,7 @@ const Home = props => {
   )
 }
 Home.getInitialProps = async ({}) => {
-  const res = await post('/api/v1/fund/rank', {
+  const res = await post('/v1/fund/rank', {
     fundType: ['hh'],
     sort: '3y',
   })
