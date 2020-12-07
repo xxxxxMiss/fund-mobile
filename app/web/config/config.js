@@ -74,6 +74,11 @@ export default {
             from: 'pwa/fund.webmanifest',
             context: webRoot,
           },
+          {
+            from: 'pwa/*.png',
+            context: webRoot,
+            flatten: true,
+          },
         ],
       },
     ])
