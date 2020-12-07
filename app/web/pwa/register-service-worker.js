@@ -24,7 +24,7 @@ export function register(config) {
   if ('serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     window.addEventListener('load', () => {
-      const swUrl = `./sw.js`
+      const swUrl = `/public/sw.js`
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
@@ -125,3 +125,5 @@ export function unregister() {
     })
   }
 }
+
+register()
