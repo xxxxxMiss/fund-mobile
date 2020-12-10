@@ -1,5 +1,5 @@
 const { Controller } = require('egg')
-
+const fs = require('fs')
 class FundController extends Controller {
   async rank() {
     const { ctx } = this
@@ -16,6 +16,26 @@ class FundController extends Controller {
       data: ctx.query,
     })
     ctx.body = res
+  }
+  async imgRecognize() {
+    const { ctx } = this
+    const file = ctx.request.files[0]
+    const imgData = fs.readFileSync(file.filepath)
+    ctx.cleanupRequestFiles()
+    const res = await ctx.curl(
+      this.config.customeConfig.recognizeUrl + '/cats/fund-recognize',
+      {
+        content: imgData,
+        dataType: 'json',
+        method: 'POST',
+        timeout: [3000, 30000],
+      }
+    )
+    console.log('==========', res)
+    ctx.body = {
+      code: 200,
+      data: res.data,
+    }
   }
 }
 

@@ -7,5 +7,6 @@ module.exports = app => {
   const { router, controller } = app
   router.post('/v1/fund/rank', controller.fund.rank)
   router.get('/v1/fund/detail', controller.fund.fundDetail)
+  router.post('/img-recognize', controller.fund.imgRecognize)
   router.get('*', controller.home.index)
 }

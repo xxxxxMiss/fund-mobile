@@ -43,5 +43,14 @@ module.exports = appInfo => {
     },
   }
 
+  config.multipart = {
+    mode: 'file',
+    fileSize: '50mb',
+  }
+
+  config.customeConfig = {
+    recognizeUrl: 'http://localhost:3000',
+  }
+
   return config
 }
