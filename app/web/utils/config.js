@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 export const FUNDTYPES = [
   {
     value: '',
@@ -115,4 +117,29 @@ export const FIELDS = {
   '6y': 'lastSixMonthsGrowth',
   '1n': 'lastYearGrowth',
   jn: 'thisYearGrowth',
+}
+
+export const getFilterOptions = () => {
+  return [
+    {
+      label: '近1月',
+      value: dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
+    },
+    {
+      label: '近3月',
+      value: dayjs().subtract(3, 'month').format('YYYY-MM-DD'),
+    },
+    {
+      label: '近6月',
+      value: dayjs().subtract(6, 'month').format('YYYY-MM-DD'),
+    },
+    {
+      label: '近1年',
+      value: dayjs().subtract(1, 'year').format('YYYY-MM-DD'),
+    },
+    {
+      label: '近3年',
+      value: dayjs().subtract(3, 'year').format('YYYY-MM-DD'),
+    },
+  ]
 }

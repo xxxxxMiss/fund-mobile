@@ -15,7 +15,36 @@ class FundController extends Controller {
       url: '/fund/detail',
       data: ctx.query,
     })
+    const xAxis = []
+    const yAxis = []
+    for (const item of res.data.netWorthData) {
+      xAxis.push(item[0])
+      yAxis.push(item[2])
+    }
+    res.data.xAxis = xAxis
+    res.data.yAxis = yAxis
     ctx.body = res
+  }
+  async dashboard() {
+    const { ctx } = this
+    const res = await ctx.helper.get(ctx, {
+      url: '/stock/board',
+    })
+    ctx.body = res
+  }
+  async industry() {
+    const { ctx } = this
+    const res = await ctx.helper.get(ctx, {
+      url: '/stock/industry/rank',
+    })
+    const fixedPanelList = []
+    for (const item of res.data) {
+      fixedPanelList.push({
+        name: item.name,
+        code: item.industryCode,
+      })
+    }
+    ctx.body = { ...res, data: { list: res.data, fixedList: fixedPanelList } }
   }
   async imgRecognize() {
     const { ctx } = this

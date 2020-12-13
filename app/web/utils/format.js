@@ -16,3 +16,16 @@ export const fmtDate = dateStr => {
   const segments = dateStr.split(' ')[0].split('-')
   return `${segments[1]}-${segments[2]}`
 }
+
+export const fmtNumber = field => {
+  if (!field)
+    return {
+      color: '#999',
+      text: '--',
+    }
+  field = Number(field)
+  return {
+    color: field === 0 ? '#999' : field > 0 ? 'red' : 'green',
+    text: field,
+  }
+}

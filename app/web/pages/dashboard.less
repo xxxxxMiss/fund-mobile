@@ -1,0 +1,29 @@
+.page-dashboard {
+  .card-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: 0;
+  }
+  .card {
+    padding: 10px 0;
+    margin: 0 15px;
+    min-width: 120px;
+    text-align: center;
+    .price {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .price-change .change-percent {
+      font-size: 12px;
+    }
+    .change-percent {
+      padding-left: 10px;
+    }
+  }
+}

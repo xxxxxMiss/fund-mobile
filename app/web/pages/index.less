@@ -1,17 +1,19 @@
+@import '../mixin.less';
 .page-rank {
   height: 100%;
   overflow: hidden;
   .wrapper {
-    height: calc(100% - 137px);
+    height: calc(100% - 42px);
     overflow: hidden;
     background-color: #fff;
   }
   .list-item {
     display: flex;
     padding: 10px 15px;
-    border: 1px solid #eee;
     align-items: center;
     color: #333;
+    position: relative;
+    .one-px-mixin();
 
     .first-col {
       flex: 3;

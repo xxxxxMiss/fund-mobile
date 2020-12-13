@@ -18,10 +18,10 @@ export default {
       },
     ],
   ],
-  plugins: [join(webRoot, 'plugins/umi-plugin-register-service-worker.js')],
+  // plugins: [join(webRoot, 'plugins/umi-plugin-register-service-worker.js')],
   ssr: {
     devServerRender: true,
-    forceInitial: false,
+    forceInitial: true,
   },
   hash: true,
   outputPath: '../public',

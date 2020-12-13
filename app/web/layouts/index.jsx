@@ -1,21 +1,42 @@
 import { TabBar, NavBar, Icon } from 'antd-mobile'
 import { useHistory } from 'umi'
+import { useState } from 'react'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
+import { createFromIconfontCN } from '@ant-design/icons'
+dayjs.locale('zh-cn')
+
+const MyIcon = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_2245065_3yyclxligoa.js', // 在 iconfont.cn 上生成
+  extraCommonProps: {
+    className: 'myicon-custom',
+  },
+})
 
 export default function AppLayout(props) {
   const history = useHistory()
+  const [selectedKey, setSelectedKey] = useState(
+    history.location?.query?.key || 'rank'
+  )
+  const gotoPage = (path, key) => {
+    history.push(path + '?key=' + key)
+    setSelectedKey(key)
+  }
   return (
     <div className={sbx('app-layout')}>
-      <NavBar
-        mode="light"
-        icon={<Icon type="left" />}
-        onLeftClick={() => history.goBack()}
-        rightContent={[
-          <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
-          <Icon key="1" type="ellipsis" />,
-        ]}
-      >
-        NavBar
-      </NavBar>
+      <div className={sbx('navbar-container')}>
+        <NavBar
+          mode="light"
+          icon={<Icon type="left" />}
+          onLeftClick={() => history.goBack()}
+          rightContent={[
+            <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
+            <Icon key="1" type="ellipsis" />,
+          ]}
+        >
+          NavBar
+        </NavBar>
+      </div>
       {props.children}
       <div className={sbx('tabbar-container')}>
         <TabBar
@@ -24,100 +45,39 @@ export default function AppLayout(props) {
           barTintColor="white"
         >
           <TabBar.Item
-            title="Life"
-            key="Life"
-            icon={
-              <div
-                style={{
-                  width: '22px',
-                  height: '22px',
-                  background:
-                    'url(https://zos.alipayobjects.com/rmsportal/sifuoDUQdAFKAVcFGROC.svg) center center /  21px 21px no-repeat',
-                }}
-              />
-            }
-            selectedIcon={
-              <div
-                style={{
-                  width: '22px',
-                  height: '22px',
-                  background:
-                    'url(https://zos.alipayobjects.com/rmsportal/iSrlOTqrKddqbOmlvUfq.svg) center center /  21px 21px no-repeat',
-                }}
-              />
-            }
-            badge={1}
-            data-seed="logId"
+            title="基金排行"
+            key="rank"
+            icon={<MyIcon type="icon-pic" />}
+            selectedIcon={<MyIcon type="icon-pic-fill" />}
+            onPress={() => gotoPage('/', 'rank')}
+            selected={selectedKey === 'rank'}
           ></TabBar.Item>
           <TabBar.Item
-            icon={
-              <div
-                style={{
-                  width: '22px',
-                  height: '22px',
-                  background:
-                    'url(https://gw.alipayobjects.com/zos/rmsportal/BTSsmHkPsQSPTktcXyTV.svg) center center /  21px 21px no-repeat',
-                }}
-              />
-            }
-            selectedIcon={
-              <div
-                style={{
-                  width: '22px',
-                  height: '22px',
-                  background:
-                    'url(https://gw.alipayobjects.com/zos/rmsportal/ekLecvKBnRazVLXbWOnE.svg) center center /  21px 21px no-repeat',
-                }}
-              />
-            }
-            title="Koubei"
-            key="Koubei"
-            badge={'new'}
-            data-seed="logId1"
-          >
-            <span>Koubei</span>
-          </TabBar.Item>
+            icon={<MyIcon type="icon-all" />}
+            selectedIcon={<MyIcon type="icon-all-fill" />}
+            title="行业板块"
+            key="industry"
+            onPress={() => gotoPage('/industryRank', 'industry')}
+            selected={selectedKey === 'industry'}
+          ></TabBar.Item>
           <TabBar.Item
-            icon={
-              <div
-                style={{
-                  width: '22px',
-                  height: '22px',
-                  background:
-                    'url(https://zos.alipayobjects.com/rmsportal/psUFoAMjkCcjqtUCNPxB.svg) center center /  21px 21px no-repeat',
-                }}
-              />
-            }
-            selectedIcon={
-              <div
-                style={{
-                  width: '22px',
-                  height: '22px',
-                  background:
-                    'url(https://zos.alipayobjects.com/rmsportal/IIRLrXXrFAhXVdhMWgUI.svg) center center /  21px 21px no-repeat',
-                }}
-              />
-            }
-            title="Friend"
-            key="Friend"
-            dot
+            icon={<MyIcon type="icon-integral" />}
+            selectedIcon={<MyIcon type="icon-integral-fill" />}
+            title="大盘指数"
+            key="dashboard"
+            onPress={() => gotoPage('/dashboard', 'dashboard')}
+            selected={selectedKey === 'dashboard'}
           >
             <span>Friend</span>
           </TabBar.Item>
           <TabBar.Item
-            icon={{
-              uri:
-                'https://zos.alipayobjects.com/rmsportal/asJMfBrNqpMMlVpeInPQ.svg',
-            }}
-            selectedIcon={{
-              uri:
-                'https://zos.alipayobjects.com/rmsportal/gjpzzcrPMkhfEqgbYvmN.svg',
-            }}
-            title="My"
-            key="my"
-          >
-            <span>My</span>
-          </TabBar.Item>
+            icon={<MyIcon type="icon-add-cart" />}
+            selectedIcon={<MyIcon type="icon-add-cart-fill" />}
+            selected={selectedKey === 'mine'}
+            onPress={() => gotoPage('/mine', 'mine')}
+            title="自选"
+            key="mine"
+          ></TabBar.Item>
         </TabBar>
       </div>
     </div>

@@ -1,0 +1,49 @@
+@import '../mixin.less';
+.page-industry {
+  height: 100%;
+  background-color: #fff;
+  overflow: hidden;
+  overflow-y: auto;
+  .no-scrollbar-mixin();
+  position: relative;
+  .fixed-panel {
+    position: absolute;
+    left: 0;
+    width: 40%;
+    padding-left: 15px;
+    .name {
+      font-size: 14px;
+    }
+    .desc-row {
+      color: #999;
+      font-size: 12px;
+    }
+    .list-item {
+      height: 60px;
+      padding: 12px 0;
+      .one-px-mixin();
+    }
+  }
+  .scroll-panel {
+    position: absolute;
+    left: 40%;
+    width: 60%;
+    padding-right: 15px;
+    overflow: hidden;
+
+    .scroller-wrapper {
+      min-width: 340px;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      height: 60px;
+      padding: 12px 0;
+      .one-px-mixin();
+    }
+    .item {
+      flex: 1 0;
+    }
+  }
+}
