@@ -63,6 +63,17 @@ class FundController extends Controller {
     const res = await ctx.helper.delFund(ctx.request.body)
     ctx.body = res
   }
+  async getMyFund() {
+    const { ctx } = this
+    const selected = await ctx.helper.getFund()
+    const res = await ctx.helper.get(ctx, {
+      url: '/fund',
+      data: {
+        code: [...selected].join(','),
+      },
+    })
+    ctx.body = res
+  }
   async imgRecognize() {
     const { ctx } = this
     const file = ctx.request.files[0]

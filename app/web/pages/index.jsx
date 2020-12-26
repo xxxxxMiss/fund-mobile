@@ -46,7 +46,7 @@ const Home = props => {
   useEffect(() => {
     if (helperRef.current.init) return
     fetchList(list, { pageIndex, fundType })
-  }, [pageIndex, counter])
+  }, [pageIndex])
 
   useEffect(() => {
     if (helperRef.current.init) return
@@ -114,7 +114,7 @@ const Home = props => {
           {row.isSelected ? (
             <MyIcon type="icon-selected" style={{ color: 'green' }} />
           ) : (
-            <MyIcon type="icon-add" />
+            <MyIcon type="icon-add" style={{ color: '#999' }} />
           )}
         </div>
       </div>

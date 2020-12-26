@@ -1,6 +1,6 @@
 import { TabBar, NavBar, Icon } from 'antd-mobile'
 import { useHistory } from 'umi'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { MyIcon } from 'components/MyIcon'
@@ -11,10 +11,16 @@ export default function AppLayout(props) {
   const [selectedKey, setSelectedKey] = useState(
     history.location?.query?.key || 'rank'
   )
+  const [title, setTitle] = useState('')
   const gotoPage = (path, key) => {
     history.push(path + '?key=' + key)
     setSelectedKey(key)
   }
+
+  useEffect(() => {
+    // setTitle(document.title)
+  }, [])
+
   return (
     <div className={sbx('app-layout')}>
       <div className={sbx('navbar-container')}>
@@ -27,7 +33,7 @@ export default function AppLayout(props) {
             <Icon key="1" type="ellipsis" />,
           ]}
         >
-          NavBar
+          {title}
         </NavBar>
       </div>
       {props.children}
@@ -60,9 +66,7 @@ export default function AppLayout(props) {
             key="dashboard"
             onPress={() => gotoPage('/dashboard', 'dashboard')}
             selected={selectedKey === 'dashboard'}
-          >
-            <span>Friend</span>
-          </TabBar.Item>
+          ></TabBar.Item>
           <TabBar.Item
             icon={<MyIcon type="icon-add-cart" />}
             selectedIcon={<MyIcon type="icon-add-cart-fill" />}

@@ -1,0 +1,51 @@
+.page-mine {
+  padding: 0 10px;
+  .card {
+    background: #ffffff;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.04);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+
+    .name {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .code {
+      font-size: 12px;
+      color: #999;
+      padding-left: 5px;
+    }
+    .row-text,
+    .row-num {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      span {
+        flex: 1;
+        text-align: center;
+        &:last-child {
+          text-align: right;
+        }
+        &:first-child {
+          text-align: left;
+        }
+      }
+    }
+    .row-text {
+      color: #999;
+    }
+    .row-num {
+      margin-top: -4px;
+    }
+  }
+  :global {
+    .am-list-item .am-input-control input {
+      font-size: 14px;
+    }
+    .am-list-item.am-input-item {
+      padding-left: 0;
+    }
+  }
+}

@@ -12,5 +12,6 @@ module.exports = app => {
   router.post('/img-recognize', controller.fund.imgRecognize)
   router.post('/v1/fund/add', controller.fund.addFund)
   router.post('/v1/fund/cancel', controller.fund.delFund)
+  router.get('/v1/fund/getMyFund', controller.fund.getMyFund)
   router.get('*', controller.home.index)
 }
