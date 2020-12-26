@@ -10,5 +10,7 @@ module.exports = app => {
   router.get('/v1/stock/board', controller.fund.dashboard)
   router.get('/v1/stock/industry/rank', controller.fund.industry)
   router.post('/img-recognize', controller.fund.imgRecognize)
+  router.post('/v1/fund/add', controller.fund.addFund)
+  router.post('/v1/fund/cancel', controller.fund.delFund)
   router.get('*', controller.home.index)
 }

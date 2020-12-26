@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Picker } from 'antd-mobile'
+import { Picker, Toast } from 'antd-mobile'
 import { post } from 'utils/request'
 import { FUNDTYPES, DATERANGE, FIELDS } from 'utils/config'
 import BScroll from '@better-scroll/core'
 import Pullup from '@better-scroll/pull-up'
-import { Link } from 'umi'
+import { useHistory } from 'umi'
 import { fmtRate } from 'utils/format'
+import { MyIcon } from 'components/MyIcon'
 
 const Home = props => {
   const [pageIndex, setPageIndex] = useState(1)
@@ -15,6 +16,8 @@ const Home = props => {
   const bsRef = useRef(null)
   const helperRef = useRef({ init: true })
   const [list, setList] = useState(props.rank)
+  const [counter, setCounter] = useState(0)
+  const history = useHistory()
 
   useEffect(() => {
     BScroll.use(Pullup)
@@ -43,12 +46,12 @@ const Home = props => {
   useEffect(() => {
     if (helperRef.current.init) return
     fetchList(list, { pageIndex, fundType })
-  }, [pageIndex])
+  }, [pageIndex, counter])
 
   useEffect(() => {
     if (helperRef.current.init) return
     fetchList([], { pageIndex: 1, fundType })
-  }, [fundType])
+  }, [fundType, counter])
 
   useEffect(() => {
     helperRef.current.init = false
@@ -59,13 +62,35 @@ const Home = props => {
     setList(props.rank)
   }, [props.rank])
 
+  const handleSelected = async code => {
+    await post('/v1/fund/add', {
+      code,
+    })
+    Toast.success('添加成功')
+    setCounter(prev => prev + 1)
+  }
+  const handleCancel = async code => {
+    await post('/v1/fund/cancel', {
+      code,
+    })
+    Toast.success('已取消自选')
+    setCounter(prev => prev - 1)
+  }
+
   const renderRow = row => {
     const { text, color } = fmtRate(row[FIELDS[sort]])
     return (
-      <Link
+      <div
         className={sbx('list-item')}
         key={row.code}
-        to={`/detail?code=${row.code}`}
+        onClick={() =>
+          history.push({
+            pathname: '/detail',
+            query: {
+              code: row.code,
+            },
+          })
+        }
       >
         <div className={sbx('first-col')}>
           <div className={sbx('name')}>{row.name}</div>
@@ -75,7 +100,24 @@ const Home = props => {
         <div className={sbx('latest-rate')} style={{ color }}>
           {text}
         </div>
-      </Link>
+        <div
+          className={sbx('selected')}
+          onClick={e => {
+            e.stopPropagation()
+            if (row.isSelected) {
+              handleCancel(row.code)
+            } else {
+              handleSelected(row.code)
+            }
+          }}
+        >
+          {row.isSelected ? (
+            <MyIcon type="icon-selected" style={{ color: 'green' }} />
+          ) : (
+            <MyIcon type="icon-add" />
+          )}
+        </div>
+      </div>
     )
   }
 
@@ -105,6 +147,7 @@ const Home = props => {
             <span>{DATERANGE.find(t => t.value === sort)?.label}</span>
           </Picker>
         </div>
+        <div className={sbx('selected')}>自选</div>
       </div>
       <div className={sbx('wrapper')} ref={scrollerRef}>
         <div className={sbx('scroller-container')}>

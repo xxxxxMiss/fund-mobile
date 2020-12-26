@@ -1,3 +1,8 @@
+const path = require('path')
+const os = require('os')
+const fs = require('fs')
+const readline = require('readline')
+
 exports.isMobile = ctx => {
   const source = ctx.get('user-agent') || ''
   let isMobile = false
@@ -35,7 +40,6 @@ exports.parseNavLang = ctx => {
   return navigatorLang
 }
 
-const path = require('path')
 const request = async (ctx, { url, data, method }) => {
   url = `https://api.doctorxiong.club/${path.join('v1', url)}`
   const res = await ctx.curl(url, {
@@ -62,4 +66,58 @@ exports.get = async (ctx, options) => {
 
 exports.post = async (ctx, options) => {
   return request(ctx, { ...options, method: 'POST' })
+}
+
+exports.addFund = async ({ code }) => {
+  try {
+    fs.appendFileSync(
+      path.join(os.homedir(), '.fund', 'selected.txt'),
+      `${code}\n`,
+      'utf8'
+    )
+    return {
+      code: 200,
+    }
+  } catch (error) {
+    return {
+      code: 500,
+      message: `添加失败: ${code}`,
+    }
+  }
+}
+
+exports.delFund = async ({ code }) => {
+  try {
+    const selected = await exports.getFund()
+    if (selected.has(code)) {
+      selected.delete(code)
+    }
+    const target = path.join(os.homedir(), '.fund/selected.txt')
+    const content = [...selected].join('\n')
+    fs.writeFileSync(target, content, 'utf8')
+    return {
+      code: 200,
+    }
+  } catch (error) {
+    return {
+      code: 500,
+      message: `取消失败：${code}`,
+    }
+  }
+}
+
+exports.getFund = async () => {
+  const target = path.join(os.homedir(), '.fund/selected.txt')
+  if (!fs.existsSync(target)) return new Set()
+
+  const selected = new Set()
+  const rl = readline.createInterface({
+    input: fs.createReadStream(target),
+    crlfDelay: Infinity,
+  })
+  for await (const code of rl) {
+    selected.add(code)
+  }
+  rl.close()
+  return selected
 }

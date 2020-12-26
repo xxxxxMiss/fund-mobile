@@ -9,28 +9,69 @@ export default function FundDetail(props) {
   const yearFmt = fmtRate(props.lastYearGrowth)
   const dayFmt = fmtRate(props.dayGrowth)
   const [options, setOptions] = useState({
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+      },
+      show: false,
+    },
+    grid: {
+      containLabel: true,
+      left: 'left',
+      right: 0,
+    },
     xAxis: {
       type: 'category',
+      boundaryGap: false,
       data: props.xAxis,
-      splitNumber: 3,
+      axisPointer: {
+        show: true,
+      },
+      max: 'dataMax',
     },
     yAxis: {
       type: 'value',
+      axisPointer: {
+        show: true,
+        label: {
+          precision: 2,
+        },
+      },
       axisLabel: {
         formatter: value => {
-          return value + '%'
+          return Number(value).toFixed(2) + '%'
         },
+        showMaxLabel: true,
       },
     },
     series: [
       {
         data: props.yAxis,
         type: 'line',
-        // smooth: true,
+        smooth: true,
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                offset: 0,
+                color: 'rgba(92, 136, 248, 0.15)', // 0% 处的颜色
+              },
+              {
+                offset: 1,
+                color: 'rgba(92, 136, 248, 0)', // 100% 处的颜色
+              },
+            ],
+          },
+        },
       },
     ],
   })
-
   useEffect(() => {}, [])
   const handleFilter = () => {}
 
@@ -59,7 +100,7 @@ export default function FundDetail(props) {
           </span>
         </div>
       </div>
-      <div className={sbx('block-chart')}>
+      {/* <div className={sbx('block-chart')}>
         <ReactEchartsCore
           echarts={echarts}
           option={options}
@@ -78,7 +119,7 @@ export default function FundDetail(props) {
             )
           })}
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

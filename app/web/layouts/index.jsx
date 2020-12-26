@@ -3,15 +3,8 @@ import { useHistory } from 'umi'
 import { useState } from 'react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
-import { createFromIconfontCN } from '@ant-design/icons'
+import { MyIcon } from 'components/MyIcon'
 dayjs.locale('zh-cn')
-
-const MyIcon = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2245065_3yyclxligoa.js', // 在 iconfont.cn 上生成
-  extraCommonProps: {
-    className: 'myicon-custom',
-  },
-})
 
 export default function AppLayout(props) {
   const history = useHistory()

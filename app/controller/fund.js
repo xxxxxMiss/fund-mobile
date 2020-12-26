@@ -7,6 +7,13 @@ class FundController extends Controller {
       url: '/fund/rank',
       data: ctx.request.body,
     })
+    const selected = await ctx.helper.getFund()
+    const data = res.data.rank
+    data.forEach(item => {
+      if (selected.has(item.code)) {
+        item.isSelected = true
+      }
+    })
     ctx.body = res
   }
   async fundDetail() {
@@ -46,6 +53,16 @@ class FundController extends Controller {
     }
     ctx.body = { ...res, data: { list: res.data, fixedList: fixedPanelList } }
   }
+  async addFund() {
+    const { ctx } = this
+    const res = ctx.helper.addFund(ctx.request.body)
+    ctx.body = res
+  }
+  async delFund() {
+    const { ctx } = this
+    const res = await ctx.helper.delFund(ctx.request.body)
+    ctx.body = res
+  }
   async imgRecognize() {
     const { ctx } = this
     const file = ctx.request.files[0]
@@ -60,7 +77,6 @@ class FundController extends Controller {
         timeout: [3000, 30000],
       }
     )
-    console.log('==========', res)
     ctx.body = {
       code: 200,
       data: res.data,

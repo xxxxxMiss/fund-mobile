@@ -62,11 +62,11 @@ export default {
     //     exclude: [/\.map$/, /favicon\.ico$/, /^manifest.*\.js?$/],
     //   },
     // ])
-    config.plugin('workbox-gensw').use(GenerateSW, [
-      {
-        swDest: 'sw.js',
-      },
-    ])
+    // config.plugin('workbox-gensw').use(GenerateSW, [
+    //   {
+    //     swDest: 'sw.js',
+    //   },
+    // ])
     config.plugin('CopyPlugin').use(CopyPlugin, [
       {
         patterns: [
