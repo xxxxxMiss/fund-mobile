@@ -27,9 +27,14 @@ class HomeController extends Controller {
     const htmlTemplate = await ctx.view.render('index.html')
 
     // 将 html 模板传到服务端渲染函数中
+    const context = {}
     const { error, html } = await this.serverRender({
       path: ctx.url,
-      getInitialPropsCtx: {},
+      context,
+      getInitialPropsCtx: {
+        title: 'hello',
+        req: ctx.request,
+      },
       htmlTemplate,
     })
 

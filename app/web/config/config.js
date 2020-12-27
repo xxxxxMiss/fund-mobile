@@ -24,6 +24,7 @@ export default {
     forceInitial: true,
   },
   hash: true,
+  title: false,
   outputPath: '../public',
   manifest: {
     fileName: '../../config/manifest.json',

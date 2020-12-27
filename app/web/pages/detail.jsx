@@ -1,13 +1,14 @@
-import { get } from 'utils/request'
 import { fmtRate, fmtDate } from 'utils/format'
 import { ReactEchartsCore, echarts } from 'utils/chart'
 import { useEffect, useState } from 'react'
 import { Button } from 'antd-mobile'
 import dayjs from 'dayjs'
 import { getFilterOptions } from 'utils/config'
-export default function FundDetail(props) {
-  const yearFmt = fmtRate(props.lastYearGrowth)
-  const dayFmt = fmtRate(props.dayGrowth)
+import { Helmet, useSelector } from 'umi'
+export default function FundDetail() {
+  const { detail: data } = useSelector(state => state.detail)
+  const yearFmt = fmtRate(data.lastYearGrowth)
+  const dayFmt = fmtRate(data.dayGrowth)
   const [options, setOptions] = useState({
     tooltip: {
       trigger: 'axis',
@@ -24,7 +25,7 @@ export default function FundDetail(props) {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: props.xAxis,
+      data: data.xAxis,
       axisPointer: {
         show: true,
       },
@@ -47,7 +48,7 @@ export default function FundDetail(props) {
     },
     series: [
       {
-        data: props.yAxis,
+        data: data.yAxis,
         type: 'line',
         smooth: true,
         areaStyle: {
@@ -77,11 +78,14 @@ export default function FundDetail(props) {
 
   return (
     <div className={sbx('page-fund-detail')}>
+      <Helmet>
+        <title>产品详情</title>
+      </Helmet>
       <div className={sbx('block-overview')}>
-        <div className={sbx('name')}>{props.name}</div>
+        <div className={sbx('name')}>{data.name}</div>
         <div className={sbx('sub-info')}>
-          <span>{props.code}</span>
-          <span className={sbx('type')}>{props.type}</span>
+          <span>{data.code}</span>
+          <span className={sbx('type')}>{data.type}</span>
         </div>
         <div className={sbx('rate-container')}>
           <div className={sbx('year')} style={{ color: yearFmt.color }}>
@@ -90,13 +94,13 @@ export default function FundDetail(props) {
           <div className={sbx('day')} style={{ color: dayFmt.color }}>
             {dayFmt.text}
           </div>
-          <div className={sbx('value')}>{props.netWorth}</div>
+          <div className={sbx('value')}>{data.netWorth}</div>
         </div>
         <div className={sbx('text-container')}>
           <span className={sbx('text')}>近一年涨幅</span>
           <span className={sbx('text')}>日涨跌幅</span>
           <span className={sbx('text')}>
-            净值 {fmtDate(props.expectWorthDate)}
+            净值 {fmtDate(data.expectWorthDate)}
           </span>
         </div>
       </div>
@@ -124,19 +128,27 @@ export default function FundDetail(props) {
   )
 }
 
-FundDetail.getInitialProps = async ({ isServer, history }) => {
+FundDetail.getInitialProps = async ({
+  isServer,
+  history,
+  store,
+  ...others
+}) => {
+  console.log('-----------others', others)
   let code = null
   if (isServer) {
     code = history.location.query.code
   } else {
     code = new URLSearchParams(window.location.search).get('code')
   }
-  const res = await get('/v1/fund/detail', {
-    params: {
+  const { dispatch, getState } = store
+  await dispatch({
+    type: 'detail/fetchDetail',
+    payload: {
       code,
       startDate: dayjs().subtract(1, 'year').format('YYYY-MM-DD'),
       endDate: dayjs().format('YYYY-MM-DD'),
     },
   })
-  return res
+  return getState()
 }

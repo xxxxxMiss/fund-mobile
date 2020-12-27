@@ -4,7 +4,7 @@ import { post } from 'utils/request'
 import { FUNDTYPES, DATERANGE, FIELDS } from 'utils/config'
 import BScroll from '@better-scroll/core'
 import Pullup from '@better-scroll/pull-up'
-import { useHistory } from 'umi'
+import { useHistory, Helmet, useSelector } from 'umi'
 import { fmtRate } from 'utils/format'
 import { MyIcon } from 'components/MyIcon'
 
@@ -18,6 +18,8 @@ const Home = props => {
   const [list, setList] = useState(props.rank)
   const [counter, setCounter] = useState(0)
   const history = useHistory()
+  const { list: ranks } = useSelector(state => state.index)
+  console.log('=========', ranks)
 
   useEffect(() => {
     BScroll.use(Pullup)
@@ -123,6 +125,9 @@ const Home = props => {
 
   return (
     <div className={sbx('page-rank')}>
+      <Helmet>
+        <title>基金排行</title>
+      </Helmet>
       <div className={sbx('list-header')}>
         <div className={sbx('filter-type')}>
           <Picker
@@ -151,7 +156,7 @@ const Home = props => {
       </div>
       <div className={sbx('wrapper')} ref={scrollerRef}>
         <div className={sbx('scroller-container')}>
-          {(list || []).map(item => {
+          {(ranks || []).map(item => {
             return renderRow(item)
           })}
         </div>
@@ -159,12 +164,17 @@ const Home = props => {
     </div>
   )
 }
-Home.getInitialProps = async ({}) => {
-  const res = await post('/v1/fund/rank', {
-    fundType: ['hh'],
-    sort: '3y',
+Home.getInitialProps = async ({ store }) => {
+  const { dispatch, getState } = store
+  await dispatch({
+    type: 'index/fetchRank',
+    payload: {
+      fundType: ['hh'],
+      sort: '3y',
+    },
+    append: false,
   })
-  return { rank: res?.rank ?? [] }
+  return getState()
 }
 
 export default Home

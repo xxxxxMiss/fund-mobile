@@ -1,26 +1,48 @@
 import { TabBar, NavBar, Icon } from 'antd-mobile'
-import { useHistory } from 'umi'
+import { useHistory, useLocation } from 'umi'
 import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { MyIcon } from 'components/MyIcon'
 dayjs.locale('zh-cn')
 
+const getTitle = location => {
+  let title = ''
+  switch (location.pathname) {
+    case '/':
+      title = '基金排行'
+      break
+    case '/detail':
+      title = '产品详情'
+      break
+    case '/industryRank':
+      title = '行业板块'
+      break
+    case '/mine':
+      title = '自选'
+      break
+    case '/dashboard':
+      title = '大盘指数'
+      break
+    default:
+      break
+  }
+  return title
+}
+
 export default function AppLayout(props) {
   const history = useHistory()
+  const location = useLocation()
   const [selectedKey, setSelectedKey] = useState(
     history.location?.query?.key || 'rank'
   )
-  const [title, setTitle] = useState('')
   const gotoPage = (path, key) => {
     history.push(path + '?key=' + key)
     setSelectedKey(key)
   }
 
-  useEffect(() => {
-    // setTitle(document.title)
-  }, [])
-
+  // TODO: fix it
+  // temp resolved
   return (
     <div className={sbx('app-layout')}>
       <div className={sbx('navbar-container')}>
@@ -33,7 +55,7 @@ export default function AppLayout(props) {
             <Icon key="1" type="ellipsis" />,
           ]}
         >
-          {title}
+          {getTitle(location)}
         </NavBar>
       </div>
       {props.children}

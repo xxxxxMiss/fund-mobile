@@ -46,3 +46,10 @@
 //     updater();
 //   },
 // };
+
+// app.(ts|js)
+export const ssr = {
+  modifyGetInitialPropsCtx: async ctx => {
+    return ctx
+  },
+}
