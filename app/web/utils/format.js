@@ -17,7 +17,7 @@ export const fmtDate = dateStr => {
   return `${segments[1]}-${segments[2]}`
 }
 
-export const fmtNumber = field => {
+export const fmtNumber = (field, withPrefix) => {
   if (!field)
     return {
       color: '#999',
@@ -26,6 +26,6 @@ export const fmtNumber = field => {
   field = Number(field)
   return {
     color: field === 0 ? '#999' : field > 0 ? 'red' : 'green',
-    text: field,
+    text: withPrefix ? `${field > 0 ? '+' : '-'}${field}` : field,
   }
 }
