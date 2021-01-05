@@ -19,7 +19,12 @@ const Home = props => {
   const [counter, setCounter] = useState(0)
   const history = useHistory()
   const { list: ranks } = useSelector(state => state.index)
-  console.log('=========', ranks)
+  const [selected, setSelected] = useState(new Set())
+
+  useEffect(() => {
+    const std = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+    setSelected(new Set(std))
+  }, [])
 
   useEffect(() => {
     BScroll.use(Pullup)
@@ -65,15 +70,28 @@ const Home = props => {
   }, [props.rank])
 
   const handleSelected = async code => {
-    await post('/v1/fund/add', {
-      code,
+    // TODO: from server or local
+    // await post('/v1/fund/add', {
+    //   code,
+    // })
+    setSelected(prev => {
+      prev.add(code)
+      const values = prev.values()
+      localStorage.setItem('fund-selected', JSON.stringify([...values]))
+      return new Set(values)
     })
     Toast.success('添加成功')
     setCounter(prev => prev + 1)
   }
   const handleCancel = async code => {
-    await post('/v1/fund/cancel', {
-      code,
+    // await post('/v1/fund/cancel', {
+    //   code,
+    // })
+    setSelected(prev => {
+      prev.delete(code)
+      const values = prev.values()
+      localStorage.setItem('fund-selected', JSON.stringify([...values]))
+      return new Set(values)
     })
     Toast.success('已取消自选')
     setCounter(prev => prev - 1)
@@ -106,14 +124,14 @@ const Home = props => {
           className={sbx('selected')}
           onClick={e => {
             e.stopPropagation()
-            if (row.isSelected) {
+            if (selected.has(row.code)) {
               handleCancel(row.code)
             } else {
               handleSelected(row.code)
             }
           }}
         >
-          {row.isSelected ? (
+          {selected.has(row.code) ? (
             <MyIcon type="icon-selected" style={{ color: 'green' }} />
           ) : (
             <MyIcon type="icon-add" style={{ color: '#999' }} />

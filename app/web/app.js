@@ -1,5 +1,6 @@
 // import { isBrowser } from 'umi';
 // import { setCookie, getCookie } from './utils/cookie';
+import React from 'react'
 
 /**
  *  在运行时扩展语言plugin，语言顺序，cookie > 浏览器默认语言 > 默认语言
@@ -52,4 +53,13 @@ export const ssr = {
   modifyGetInitialPropsCtx: async ctx => {
     return ctx
   },
+}
+
+export const rootContainer = element => {
+  console.log('-----rootContainer----', element)
+  return React.createElement('div', { id: 'test' }, element)
+}
+
+export const onRouteChange = ({ routes, matchedRoutes, location, action }) => {
+  console.log('onRouteChange: ', matchedRoutes, location)
 }

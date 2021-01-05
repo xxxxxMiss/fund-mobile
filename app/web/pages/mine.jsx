@@ -2,12 +2,13 @@ import { get } from 'utils/request'
 import { InputItem } from 'antd-mobile'
 import { fmtRate, fmtNumber } from 'utils/format'
 import { getEvaluateProfit } from 'utils/calc'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const Mine = () => {
   const [list, setList] = useState([])
   const [calcData, setCalcData] = useState({})
   const [totalProfit, setTotalProfit] = useState(0)
+  const timerRef = useRef(null)
 
   const getData = list => {
     const hold = JSON.parse(localStorage.getItem('fund-hold') || '{}')
@@ -25,10 +26,16 @@ const Mine = () => {
   }
 
   useEffect(() => {
-    get('/v1/fund/getMyFund').then(list => {
-      setList(list)
-      getData(list)
-    })
+    timerRef.current = setInterval(() => {
+      if (timerRef.current) clearInterval(timerRef.current)
+      get('/v1/fund/getMyFund').then(list => {
+        setList(list)
+        getData(list)
+      })
+    }, 3000)
+    return () => {
+      clearInterval(timerRef.current)
+    }
   }, [])
 
   const handleBlur = () => {
