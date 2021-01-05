@@ -55,10 +55,7 @@ export const ssr = {
   },
 }
 
-export const rootContainer = element => {
-  console.log('-----rootContainer----', element)
-  return React.createElement('div', { id: 'test' }, element)
-}
+export const rootContainer = element => {}
 
 export const onRouteChange = ({ routes, matchedRoutes, location, action }) => {
   console.log('onRouteChange: ', matchedRoutes, location)
