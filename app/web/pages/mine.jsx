@@ -26,12 +26,15 @@ const Mine = () => {
   }
 
   useEffect(() => {
-    timerRef.current = setInterval(() => {
-      if (timerRef.current) clearInterval(timerRef.current)
+    const fetchMyFund = () => {
       get('/v1/fund/getMyFund').then(list => {
         setList(list)
         getData(list)
       })
+    }
+    fetchMyFund()
+    timerRef.current = setInterval(() => {
+      // fetchMyFund()
     }, 3000)
     return () => {
       clearInterval(timerRef.current)

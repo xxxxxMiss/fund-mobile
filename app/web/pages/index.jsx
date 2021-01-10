@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Picker, Toast } from 'antd-mobile'
 import { post } from 'utils/request'
 import { FUNDTYPES, DATERANGE, FIELDS } from 'utils/config'
@@ -16,14 +16,13 @@ const Home = props => {
   const bsRef = useRef(null)
   const helperRef = useRef({ init: true })
   const [list, setList] = useState(props.rank)
-  const [counter, setCounter] = useState(0)
   const history = useHistory()
   const { list: ranks } = useSelector(state => state.index)
-  const [selected, setSelected] = useState(new Set())
+  const [selected, setSelected] = useState([])
 
   useEffect(() => {
     const std = JSON.parse(localStorage.getItem('fund-selected') || '[]')
-    setSelected(new Set(std))
+    setSelected(std)
   }, [])
 
   useEffect(() => {
@@ -58,7 +57,7 @@ const Home = props => {
   useEffect(() => {
     if (helperRef.current.init) return
     fetchList([], { pageIndex: 1, fundType })
-  }, [fundType, counter])
+  }, [fundType])
 
   useEffect(() => {
     helperRef.current.init = false
@@ -69,54 +68,45 @@ const Home = props => {
     setList(props.rank)
   }, [props.rank])
 
-  const handleSelected = async code => {
-    // TODO: from server or local
-    // await post('/v1/fund/add', {
-    //   code,
-    // })
-    setSelected(prev => {
-      prev.add(code)
-      const values = prev.values()
-      localStorage.setItem('fund-selected', JSON.stringify([...values]))
-      return new Set(values)
-    })
-    Toast.success('添加成功')
-    setCounter(prev => prev + 1)
-  }
-  const handleCancel = async code => {
-    // await post('/v1/fund/cancel', {
-    //   code,
-    // })
-    setSelected(prev => {
-      prev.delete(code)
-      const values = prev.values()
-      localStorage.setItem('fund-selected', JSON.stringify([...values]))
-      return new Set(values)
-    })
-    Toast.success('已取消自选')
-    setCounter(prev => prev - 1)
-  }
+  const handleSelected = useCallback(code => {
+    if (selected.includes(code)) {
+      setSelected(prev => {
+        const i = selected.indexOf(code)
+        prev.splice(i, 1)
+        localStorage.setItem('fund-selected', JSON.stringify(prev))
+        return [...prev]
+      })
+      Toast.success('已取消自选')
+    } else {
+      setSelected(prev => {
+        prev.push(code)
+        localStorage.setItem('fund-selected', JSON.stringify(prev))
+        return [...prev]
+      })
+      Toast.success('添加成功')
+    }
+  })
 
-  const renderRow = row => {
-    const { text, color } = fmtRate(row[FIELDS[sort]])
+  const renderRow = useCallback(item => {
+    const { text, color } = fmtRate(item[FIELDS[sort]])
     return (
       <div
         className={sbx('list-item')}
-        key={row.code}
+        key={item.code}
         onClick={() =>
           history.push({
             pathname: '/detail',
             query: {
-              code: row.code,
+              code: item.code,
             },
           })
         }
       >
         <div className={sbx('first-col')}>
-          <div className={sbx('name')}>{row.name}</div>
-          <div className={sbx('code')}>{row.code}</div>
+          <div className={sbx('name')}>{item.name}</div>
+          <div className={sbx('code')}>{item.code}</div>
         </div>
-        <div className={sbx('latest-value')}>{row.netWorth}</div>
+        <div className={sbx('latest-value')}>{item.netWorth}</div>
         <div className={sbx('latest-rate')} style={{ color }}>
           {text}
         </div>
@@ -124,14 +114,10 @@ const Home = props => {
           className={sbx('selected')}
           onClick={e => {
             e.stopPropagation()
-            if (selected.has(row.code)) {
-              handleCancel(row.code)
-            } else {
-              handleSelected(row.code)
-            }
+            handleSelected(item.code)
           }}
         >
-          {selected.has(row.code) ? (
+          {selected.includes(item.code) ? (
             <MyIcon type="icon-selected" style={{ color: 'green' }} />
           ) : (
             <MyIcon type="icon-add" style={{ color: '#999' }} />
@@ -139,7 +125,7 @@ const Home = props => {
         </div>
       </div>
     )
-  }
+  }, [])
 
   return (
     <div className={sbx('page-rank')}>

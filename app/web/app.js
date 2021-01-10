@@ -55,8 +55,6 @@ export const ssr = {
   },
 }
 
-export const rootContainer = element => {}
-
 export const onRouteChange = ({ routes, matchedRoutes, location, action }) => {
   console.log('onRouteChange: ', matchedRoutes, location)
 }
