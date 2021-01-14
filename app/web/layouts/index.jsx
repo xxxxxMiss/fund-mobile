@@ -1,6 +1,6 @@
-import { TabBar, NavBar, Icon } from 'antd-mobile'
+import { TabBar, NavBar, Icon, List, InputItem } from 'antd-mobile'
 import { useHistory, useLocation } from 'umi'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { MyIcon } from 'components/MyIcon'
@@ -36,10 +36,21 @@ export default function AppLayout(props) {
   const [selectedKey, setSelectedKey] = useState(
     history.location?.query?.key || 'rank'
   )
+  const [inSearch, setInSearch] = useState(false)
+  const [value, setValue] = useState('')
+  const inputRef = useRef(null)
   const gotoPage = (path, key) => {
     history.push(path + '?key=' + key)
     setSelectedKey(key)
   }
+
+  const handleSearch = value => {
+    history.push(`/detail?code=${value}`)
+  }
+
+  useEffect(() => {
+    setInSearch(false)
+  }, [location.pathname])
 
   // TODO: fix it
   // temp resolved
@@ -51,11 +62,32 @@ export default function AppLayout(props) {
           icon={<Icon type="left" />}
           onLeftClick={() => history.goBack()}
           rightContent={[
-            <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
+            <Icon
+              key="0"
+              onClick={() => {
+                setInSearch(true)
+                inputRef?.current?.focus()
+              }}
+              type="search"
+              style={{ marginRight: '16px' }}
+            />,
             <Icon key="1" type="ellipsis" />,
           ]}
         >
-          {getTitle(location)}
+          {inSearch ? (
+            <List>
+              <InputItem
+                ref={inputRef}
+                clear
+                onChange={value => setValue(value)}
+                value={value}
+                placeholder="基金代码"
+                onVirtualKeyboardConfirm={handleSearch}
+              />
+            </List>
+          ) : (
+            getTitle(location)
+          )}
         </NavBar>
       </div>
       {props.children}

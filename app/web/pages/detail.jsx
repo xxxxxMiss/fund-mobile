@@ -1,7 +1,7 @@
 import { fmtRate, fmtDate } from 'utils/format'
 import { ReactEchartsCore, echarts } from 'utils/chart'
 import { useEffect, useState } from 'react'
-import { Button } from 'antd-mobile'
+import { Button, Toast } from 'antd-mobile'
 import dayjs from 'dayjs'
 import { getFilterOptions } from 'utils/config'
 import { Helmet, useSelector } from 'umi'
@@ -9,6 +9,7 @@ export default function FundDetail() {
   const { detail: data } = useSelector(state => state.detail)
   const yearFmt = fmtRate(data.lastYearGrowth)
   const dayFmt = fmtRate(data.dayGrowth)
+  const [isSelected, setIsSelected] = useState(false)
   const [options, setOptions] = useState({
     tooltip: {
       trigger: 'axis',
@@ -73,8 +74,25 @@ export default function FundDetail() {
       },
     ],
   })
-  useEffect(() => {}, [])
-  const handleFilter = () => {}
+
+  useEffect(() => {
+    const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+    setIsSelected(selected.includes(data.code))
+  }, [])
+
+  const handleSelect = () => {
+    const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+    if (isSelected) {
+      selected.splice(selected.indexOf(data.code), 1)
+      Toast.success('已取消自选')
+      setIsSelected(false)
+    } else {
+      selected.push(data.code)
+      Toast.success('已添加自选')
+      setIsSelected(true)
+    }
+    localStorage.setItem('fund-selected', JSON.stringify(selected))
+  }
 
   return (
     <div className={sbx('page-fund-detail')}>
@@ -124,17 +142,16 @@ export default function FundDetail() {
           })}
         </div>
       </div> */}
+      <div className={sbx('btn-wrapper')}>
+        <Button type="primary" onClick={handleSelect}>
+          {isSelected ? '取消自选' : '添加自选'}
+        </Button>
+      </div>
     </div>
   )
 }
 
-FundDetail.getInitialProps = async ({
-  isServer,
-  history,
-  store,
-  ...others
-}) => {
-  console.log('-----------others', others)
+FundDetail.getInitialProps = async ({ isServer, history, store }) => {
   let code = null
   if (isServer) {
     code = history.location.query.code

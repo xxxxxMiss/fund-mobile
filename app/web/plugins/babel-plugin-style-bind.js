@@ -23,7 +23,7 @@ module.exports = ({ types: t }) => {
       this.defaultOpts = {
         varName: 'cx',
         extensions: ['.less'],
-        includes: [join(process.cwd(), 'src/pages/**/*.{jsx, tsx}')],
+        includes: [join(process.cwd(), 'src', 'pages', '**', '*.{jsx,tsx}')],
       }
       this.opts = {
         ...this.defaultOpts,
