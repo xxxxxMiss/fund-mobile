@@ -11,7 +11,9 @@ const Mine = () => {
   const [list, setList] = useState([])
   const [calcData, setCalcData] = useState({})
   const [totalProfit, setTotalProfit] = useState(0)
+  const [keyboardVisible, setKeyboardVisible] = useState(false)
   const timerRef = useRef(null)
+  const keyboardRef = useRef(null)
 
   const getData = list => {
     const hold = JSON.parse(localStorage.getItem('fund-hold') || '{}')
@@ -72,17 +74,30 @@ const Mine = () => {
     Object.keys(calcData).forEach(code => {
       sum += Number(calcData[code]?.[1] || 0)
     })
-    setTotalProfit(sum)
+    setTotalProfit(sum.toFixed(2))
   }, [calcData])
+
+  useEffect(() => {
+    if (!keyboardRef.current) {
+      keyboardRef.current = document.getElementById(
+        '#am-number-keyboard-container'
+      )
+    }
+    const keyboard = keyboardRef.current
+    if (!keyboard) return
+    if (!keyboardVisible) {
+      keyboard.style.display = 'none'
+    } else {
+      keyboard.style.display = 'block'
+    }
+  }, [keyboardVisible])
 
   return (
     <div className={sbx('page-mine')}>
       <div className={sbx('profit-overview')}>
-        <div className={sbx('num-row')}>
-          持有基金数：<span className={sbx('num')}>{list.length}</span>
-        </div>
         <div className={sbx('profit-row')}>
-          预估累计收益：<span className={sbx('profit')}>{totalProfit}</span>
+          预估收益：
+          <span className={sbx('profit')}>{totalProfit}</span>
         </div>
       </div>
       <div className={sbx('list')}>
@@ -104,8 +119,16 @@ const Mine = () => {
               <div className={sbx('row-num')}>
                 <span>
                   <InputItem
-                    type="search"
+                    type="money"
+                    moneyKeyboardAlign="left"
+                    autoAdjustHeight
                     onBlur={handleBlur}
+                    onVirtualKeyboardConfirm={() => {
+                      setKeyboardVisible(false)
+                    }}
+                    onFocus={() => {
+                      setKeyboardVisible(true)
+                    }}
                     value={calcData[item.code]?.[0]}
                     onChange={val => {
                       setCalcData(prev => {

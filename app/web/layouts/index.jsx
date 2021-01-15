@@ -86,6 +86,8 @@ export default function AppLayout(props) {
                 value={value}
                 placeholder="基金代码"
                 onVirtualKeyboardConfirm={handleSearch}
+                type="money"
+                moneyKeyboardAlign="left"
               />
             </List>
           ) : (

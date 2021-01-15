@@ -1,6 +1,6 @@
 .page-mine {
-  padding: 0 10px;
   position: relative;
+  height: 100%;
   .profit-overview {
     position: absolute;
     left: 0;
@@ -26,13 +26,21 @@
     }
   }
   .list {
-    padding-top: 120px;
+    position: absolute;
+    top: 120px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 10px;
+    overflow: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .card {
     background: #ffffff;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.04);
     border-radius: 10px;
-    padding: 15px;
+    padding: 10px 15px;
     margin-top: 15px;
 
     .name {
@@ -69,8 +77,12 @@
     }
   }
   :global {
-    .am-list-item .am-input-control input {
-      font-size: 14px;
+    .am-list-item .am-input-control {
+      .fake-input,
+      .fake-input-placeholder,
+      input {
+        font-size: 14px;
+      }
     }
     .am-list-item.am-input-item {
       padding-left: 0;
