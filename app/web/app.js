@@ -54,7 +54,3 @@ export const ssr = {
     return ctx
   },
 }
-
-export const onRouteChange = ({ routes, matchedRoutes, location, action }) => {
-  console.log('onRouteChange: ', matchedRoutes, location)
-}
