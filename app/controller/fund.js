@@ -65,11 +65,10 @@ class FundController extends Controller {
   }
   async getMyFund() {
     const { ctx } = this
-    const selected = await ctx.helper.getFund()
     const res = await ctx.helper.get(ctx, {
       url: '/fund',
       data: {
-        code: [...selected].join(','),
+        code: ctx.query.code,
       },
     })
     ctx.body = res

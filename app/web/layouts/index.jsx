@@ -52,6 +52,10 @@ export default function AppLayout(props) {
     setInSearch(false)
   }, [location.pathname])
 
+  useEffect(() => {
+    if (inSearch) inputRef?.current?.focus()
+  }, [inSearch])
+
   // TODO: fix it
   // temp resolved
   return (
@@ -66,7 +70,6 @@ export default function AppLayout(props) {
               key="0"
               onClick={() => {
                 setInSearch(true)
-                inputRef?.current?.focus()
               }}
               type="search"
               style={{ marginRight: '16px' }}

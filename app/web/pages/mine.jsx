@@ -2,7 +2,10 @@ import { get } from 'utils/request'
 import { InputItem } from 'antd-mobile'
 import { fmtRate, fmtNumber } from 'utils/format'
 import { getEvaluateProfit } from 'utils/calc'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import dayjs from 'dayjs'
+import isBetween from 'dayjs/plugin/isBetween'
+dayjs.extend(isBetween)
 
 const Mine = () => {
   const [list, setList] = useState([])
@@ -27,27 +30,42 @@ const Mine = () => {
 
   useEffect(() => {
     const fetchMyFund = () => {
-      get('/v1/fund/getMyFund').then(list => {
+      const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+      get('/v1/fund/getMyFund', {
+        params: {
+          code: selected.join(','),
+        },
+      }).then(list => {
         setList(list)
         getData(list)
       })
     }
     fetchMyFund()
     timerRef.current = setInterval(() => {
-      // fetchMyFund()
+      if (
+        dayjs().isBetween(
+          dayjs().hour(9).minute(30),
+          dayjs().hour(11).minute(30),
+          'hour',
+          '[]'
+        ) ||
+        dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]')
+      ) {
+        fetchMyFund()
+      }
     }, 3000)
     return () => {
       clearInterval(timerRef.current)
     }
   }, [])
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     const data = {}
     Object.keys(calcData).forEach(code => {
       data[code] = calcData[code][0]
     })
     localStorage.setItem('fund-hold', JSON.stringify(data))
-  }
+  })
 
   useEffect(() => {
     let sum = 0
@@ -86,6 +104,7 @@ const Mine = () => {
               <div className={sbx('row-num')}>
                 <span>
                   <InputItem
+                    type="search"
                     onBlur={handleBlur}
                     value={calcData[item.code]?.[0]}
                     onChange={val => {

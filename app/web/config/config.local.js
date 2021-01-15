@@ -10,6 +10,7 @@ export default {
   },
   define: {
     // 'process.env.axiosBaseURL': 'http://localhost:8000/api',
-    'process.env.axiosBaseURL': 'http://192.168.31.208:8000/api',
+    // 'process.env.axiosBaseURL': 'http://192.168.31.208:8000/api',
+    'process.env.axiosBaseURL': 'http://192.168.113.26:8000/api',
   },
 }
