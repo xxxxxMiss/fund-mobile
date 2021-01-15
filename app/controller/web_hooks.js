@@ -33,6 +33,7 @@ class WebHooksController extends Controller {
       modified.some(p => p.includes('web'))
     }
     try {
+      process.chdir(this.config.baseDir)
       await exec('git', ['pull'])
       if (isWeb) {
         await exec('npm', ['run', 'build'])
@@ -41,6 +42,7 @@ class WebHooksController extends Controller {
       await exec('npm', ['start'])
       ctx.body = 'Succefully'
     } catch (error) {
+      ctx.logger.error(error)
       ctx.body = error.message
     }
   }
