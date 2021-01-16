@@ -45,13 +45,15 @@ const Mine = () => {
     fetchMyFund()
     timerRef.current = setInterval(() => {
       if (
-        dayjs().isBetween(
+        0 < dayjs().day() &&
+        dayjs().day() < 6 &&
+        (dayjs().isBetween(
           dayjs().hour(9).minute(30),
           dayjs().hour(11).minute(30),
           'hour',
           '[]'
         ) ||
-        dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]')
+          dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]'))
       ) {
         fetchMyFund()
       }
@@ -67,6 +69,7 @@ const Mine = () => {
       data[code] = calcData[code][0]
     })
     localStorage.setItem('fund-hold', JSON.stringify(data))
+    setKeyboardVisible(false)
   })
 
   useEffect(() => {
@@ -78,17 +81,11 @@ const Mine = () => {
   }, [calcData])
 
   useEffect(() => {
-    if (!keyboardRef.current) {
-      keyboardRef.current = document.getElementById(
-        '#am-number-keyboard-container'
-      )
-    }
-    const keyboard = keyboardRef.current
-    if (!keyboard) return
-    if (!keyboardVisible) {
-      keyboard.style.display = 'none'
-    } else {
-      keyboard.style.display = 'block'
+    keyboardRef.current = document.getElementById(
+      'am-number-keyboard-container'
+    )
+    if (keyboardRef.current && !keyboardVisible) {
+      keyboardRef.current.remove()
     }
   }, [keyboardVisible])
 

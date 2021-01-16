@@ -68,64 +68,70 @@ const Home = props => {
     setList(props.rank)
   }, [props.rank])
 
-  const handleSelected = useCallback(code => {
-    if (selected.includes(code)) {
-      setSelected(prev => {
-        const i = selected.indexOf(code)
-        prev.splice(i, 1)
-        localStorage.setItem('fund-selected', JSON.stringify(prev))
-        return [...prev]
-      })
-      Toast.success('已取消自选')
-    } else {
-      setSelected(prev => {
-        prev.push(code)
-        localStorage.setItem('fund-selected', JSON.stringify(prev))
-        return [...prev]
-      })
-      Toast.success('添加成功')
-    }
-  })
+  const handleSelected = useCallback(
+    code => {
+      if (selected.includes(code)) {
+        setSelected(prev => {
+          const i = selected.indexOf(code)
+          prev.splice(i, 1)
+          localStorage.setItem('fund-selected', JSON.stringify(prev))
+          return [...prev]
+        })
+        Toast.success('已取消自选')
+      } else {
+        setSelected(prev => {
+          prev.push(code)
+          localStorage.setItem('fund-selected', JSON.stringify(prev))
+          return [...prev]
+        })
+        Toast.success('添加成功')
+      }
+    },
+    [selected]
+  )
 
-  const renderRow = useCallback(item => {
-    const { text, color } = fmtRate(item[FIELDS[sort]])
-    return (
-      <div
-        className={sbx('list-item')}
-        key={item.code}
-        onClick={() =>
-          history.push({
-            pathname: '/detail',
-            query: {
-              code: item.code,
-            },
-          })
-        }
-      >
-        <div className={sbx('first-col')}>
-          <div className={sbx('name')}>{item.name}</div>
-          <div className={sbx('code')}>{item.code}</div>
-        </div>
-        <div className={sbx('latest-value')}>{item.netWorth}</div>
-        <div className={sbx('latest-rate')} style={{ color }}>
-          {text}
-        </div>
+  const renderRow = useCallback(
+    item => {
+      const { text, color } = fmtRate(item[FIELDS[sort]])
+      return (
         <div
-          className={sbx('selected')}
-          onClick={e => {
-            e.stopPropagation()
-            handleSelected(item.code)
-          }}
+          className={sbx('list-item')}
+          key={item.code}
+          onClick={() =>
+            history.push({
+              pathname: '/detail',
+              query: {
+                code: item.code,
+              },
+            })
+          }
         >
-          {selected.includes(item.code) ? (
-            <MyIcon type="icon-selected" style={{ color: 'green' }} />
-          ) : (
-            <MyIcon type="icon-add" style={{ color: '#999' }} />
-          )}
+          <div className={sbx('first-col')}>
+            <div className={sbx('name')}>{item.name}</div>
+            <div className={sbx('code')}>{item.code}</div>
+          </div>
+          <div className={sbx('latest-value')}>{item.netWorth}</div>
+          <div className={sbx('latest-rate')} style={{ color }}>
+            {text}
+          </div>
+          <div
+            className={sbx('selected')}
+            onClick={e => {
+              e.stopPropagation()
+              handleSelected(item.code)
+            }}
+          >
+            {selected.includes(item.code) ? (
+              <MyIcon type="icon-selected" style={{ color: 'green' }} />
+            ) : (
+              <MyIcon type="icon-add" style={{ color: '#999' }} />
+            )}
+          </div>
         </div>
-      </div>
-    )
-  }, [])
+      )
+    },
+    [selected, fundType, sort]
+  )
 
   return (
     <div className={sbx('page-rank')}>

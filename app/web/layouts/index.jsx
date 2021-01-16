@@ -50,6 +50,7 @@ export default function AppLayout(props) {
 
   useEffect(() => {
     setInSearch(false)
+    setValue('')
   }, [location.pathname])
 
   useEffect(() => {

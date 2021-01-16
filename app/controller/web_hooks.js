@@ -24,6 +24,8 @@ class WebHooksController extends Controller {
     const {
       head_commit: { added, removed, modified },
     } = ctx.request.body
+    ctx.body = 'Successfully'
+
     let isWeb = false
     isWeb = added.some(p => p.includes('web'))
     if (!isWeb) {
@@ -35,15 +37,16 @@ class WebHooksController extends Controller {
     try {
       process.chdir(this.config.baseDir)
       await exec('git', ['pull'])
+      ctx.logger.info('>>>>>>>>>>>git pull successfully')
       if (isWeb) {
         await exec('npm', ['run', 'build'])
+        ctx.logger.info('>>>>>>>>>>>npm run build successfully')
       }
       await exec('npm', ['stop'])
       await exec('npm', ['start'])
-      ctx.body = 'Succefully'
+      ctx.logger.info('>>>>>>>>>>>npm start successfully')
     } catch (error) {
       ctx.logger.error(error)
-      ctx.body = error.message
     }
   }
 }
