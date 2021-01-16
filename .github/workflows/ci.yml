@@ -1,0 +1,22 @@
+name: Node CI
+
+on:
+  push:
+    paths-ignore:
+      - '.github/**/*.md'
+      - 'examples/**'
+      - 'docs/**'
+      - '*.md'
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: install deps
+        run: npm install
+      - name: build web
+        run: npm run build
+      - name: restart server
+        run: |
+          npm stop
+          npm start
