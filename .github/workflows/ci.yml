@@ -29,7 +29,7 @@ jobs:
         working-directory: /usr/local/web/fund-mobile/fund-mobile
     steps:
       - name: install deps
-        run: npm install
+        run: npm install --unsafe-perm=true --allow-root
       - name: build web
         run: npm run build
       - name: restart server
