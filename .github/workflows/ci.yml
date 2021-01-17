@@ -20,6 +20,18 @@ jobs:
       - name: build web
         run: npm run build
       - name: restart server
-        run: |
-          npm stop
-          npm start
+        run: npm stop
+      - run: npm start
+  build-frontend-dogpack:
+    runs-on: dogpack
+    defaults:
+      run:
+        working-directory: /usr/local/web/fund-mobile/fund-mobile
+    steps:
+      - name: install deps
+        run: npm install
+      - name: build web
+        run: npm run build
+      - name: restart server
+        run: npm stop
+      - run: npm start
