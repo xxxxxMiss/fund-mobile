@@ -15,6 +15,11 @@ jobs:
       run:
         working-directory: /root/fund-mobile
     steps:
+      - name: sync remote code
+        run: |
+          git fetch -a
+          git reset --hard origin/master
+          git clean -df
       - name: install deps
         run: npm install
       - name: build web
@@ -28,6 +33,11 @@ jobs:
       run:
         working-directory: /usr/local/web/fund-mobile/fund-mobile
     steps:
+      - name: sync remote code
+        run: |
+          git fetch -a
+          git reset --hard origin/master
+          git clean -df
       - name: install deps
         run: npm install --unsafe-perm=true --allow-root
       - name: build web
