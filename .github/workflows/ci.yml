@@ -27,21 +27,57 @@ jobs:
       - name: restart server
         run: npm stop
       - run: npm start
-  build-frontend-dogpack:
-    runs-on: dogpack
-    defaults:
-      run:
-        working-directory: /usr/local/web/fund-mobile/fund-mobile
+
+  # build-frontend-dogpack:
+  #   runs-on: dogpack
+  #   defaults:
+  #     run:
+  #       working-directory: /usr/local/web/fund-mobile/fund-mobile
+  #   steps:
+  #     - name: sync remote code
+  #       run: |
+  #         git fetch -a
+  #         git reset --hard origin/master
+  #         git clean -df
+  #     - name: install deps
+  #       run: npm install --unsafe-perm=true --allow-root
+  #     - name: build web
+  #       run: npm run build
+  #     - name: restart server
+  #       run: npm stop
+  #     - run: npm start
+  #
+
+  build-with-github-hosted:
+    runs-on: ubuntu-latest
     steps:
-      - name: sync remote code
-        run: |
-          git fetch -a
-          git reset --hard origin/master
-          git clean -df
-      - name: install deps
+      - name: sync remote source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '1'
+      - name: install nodejs
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: install project deps
         run: npm install --unsafe-perm=true --allow-root
       - name: build web
-        run: npm run build
-      - name: restart server
-        run: npm stop
-      - run: npm start
+        run: npm run build --if-present
+      - name: sync bundle to target server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SOURCE: '{app,config,package.json}'
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+      - name: start server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd ${{  secrets.REMOTE_TARGET }}
+            npm stop
+            npm start
