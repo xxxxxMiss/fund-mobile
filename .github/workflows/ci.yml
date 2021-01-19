@@ -46,7 +46,6 @@ jobs:
   #     - name: restart server
   #       run: npm stop
   #     - run: npm start
-  #
 
   build-with-github-hosted:
     runs-on: ubuntu-latest
@@ -66,6 +65,7 @@ jobs:
       - name: merge multi bundle to a folder
         run: |
           mkdir dist
+          rm -rf app/web
           cp -r app dist
           cp -r config dist
           cp -r package.json dist
@@ -78,12 +78,12 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
       - name: start server
-        uses: appleboy/ssh-action@master
+        uses: fifsky/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
+          user: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
+          command: |
             cd ${{  secrets.REMOTE_TARGET }}
             npm install --production
             npm stop
