@@ -63,11 +63,17 @@ jobs:
         run: npm install --unsafe-perm=true --allow-root
       - name: build web
         run: npm run build --if-present
+      - name: merge multi bundle to a folder
+        run: |
+          mkdir dist
+          cp -r app dist
+          cp -r config dist
+          cp -r package.json dist
       - name: sync bundle to target server
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          SOURCE: '{app,config,package.json}'
+          SOURCE: dist/
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
@@ -79,5 +85,6 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ${{  secrets.REMOTE_TARGET }}
+            npm install --production
             npm stop
             npm start
