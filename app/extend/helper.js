@@ -40,8 +40,9 @@ exports.parseNavLang = ctx => {
   return navigatorLang
 }
 
-const request = async (ctx, { url, data, method }) => {
-  url = `https://api.doctorxiong.club/${path.join('v1', url)}`
+const request = async (ctx, { url, data, method, headers = {} }) => {
+  // url = `https://api.doctorxiong.club/${path.join('v1', url)}`
+  url = `https://api.yiduu.com/${path.join('v1', url)}`
   const res = await ctx.curl(url, {
     data,
     dataType: 'json',
@@ -49,7 +50,9 @@ const request = async (ctx, { url, data, method }) => {
     method,
     headers: {
       // Token: '217a71ac3b052446e98d3e52e512d006',
-      token: 'ykAIlw6j9d',
+      // token: 'ykAIlw6j9d',
+      token: ctx.headers.token,
+      ...headers,
     },
   })
   if (process.env.NODE_ENV != 'production') {

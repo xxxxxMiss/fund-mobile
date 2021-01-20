@@ -179,8 +179,11 @@ Home.getInitialProps = async ({ store }) => {
   await dispatch({
     type: 'index/fetchRank',
     payload: {
-      fundType: ['hh'],
-      sort: '3y',
+      fundCompany: '0',
+      fundType: 'all',
+      sort: 'rzdf',
+      pageIndex: 1,
+      pageSize: 10,
     },
     append: false,
   })

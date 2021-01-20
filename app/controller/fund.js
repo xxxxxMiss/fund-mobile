@@ -1,6 +1,21 @@
 const { Controller } = require('egg')
 const fs = require('fs')
 class FundController extends Controller {
+  async login() {
+    const { ctx } = this
+    const res = await ctx.helper.post(ctx, {
+      url: '/user/login',
+      data: ctx.request.body,
+    })
+    ctx.body = res
+  }
+  async restore() {
+    const { ctx } = this
+    const res = await ctx.helper.post(ctx, {
+      url: '/config/restore',
+    })
+    ctx.body = res
+  }
   async rank() {
     const { ctx } = this
     const res = await ctx.helper.post(ctx, {
@@ -8,8 +23,7 @@ class FundController extends Controller {
       data: ctx.request.body,
     })
     const selected = await ctx.helper.getFund()
-    const data = res.data.rank
-    data.forEach(item => {
+    res.data.forEach(item => {
       if (selected.has(item.code)) {
         item.isSelected = true
       }

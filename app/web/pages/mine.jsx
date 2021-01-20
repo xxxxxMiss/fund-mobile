@@ -1,4 +1,4 @@
-import { get } from 'utils/request'
+import { get, post } from 'utils/request'
 import { InputItem } from 'antd-mobile'
 import { fmtRate, fmtNumber } from 'utils/format'
 import { getEvaluateProfit } from 'utils/calc'
@@ -31,37 +31,41 @@ const Mine = () => {
   }
 
   useEffect(() => {
-    const fetchMyFund = () => {
-      const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
-      get('/v1/fund/getMyFund', {
-        params: {
-          code: selected.join(','),
-        },
-      }).then(list => {
-        setList(list)
-        getData(list)
-      })
-    }
-    fetchMyFund()
-    timerRef.current = setInterval(() => {
-      if (
-        0 < dayjs().day() &&
-        dayjs().day() < 6 &&
-        (dayjs().isBetween(
-          dayjs().hour(9).minute(30),
-          dayjs().hour(11).minute(30),
-          'hour',
-          '[]'
-        ) ||
-          dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]'))
-      ) {
-        fetchMyFund()
-      }
-    }, 3000)
-    return () => {
-      clearInterval(timerRef.current)
-    }
+    post('/v1/fund/restore').then(() => {})
   }, [])
+
+  // useEffect(() => {
+  //   const fetchMyFund = () => {
+  //     const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+  //     get('/v1/fund/getMyFund', {
+  //       params: {
+  //         code: selected.join(','),
+  //       },
+  //     }).then(list => {
+  //       setList(list)
+  //       getData(list)
+  //     })
+  //   }
+  //   fetchMyFund()
+  //   timerRef.current = setInterval(() => {
+  //     if (
+  //       0 < dayjs().day() &&
+  //       dayjs().day() < 6 &&
+  //       (dayjs().isBetween(
+  //         dayjs().hour(9).minute(30),
+  //         dayjs().hour(11).minute(30),
+  //         'hour',
+  //         '[]'
+  //       ) ||
+  //         dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]'))
+  //     ) {
+  //       fetchMyFund()
+  //     }
+  //   }, 3000)
+  //   return () => {
+  //     clearInterval(timerRef.current)
+  //   }
+  // }, [])
 
   const handleBlur = useCallback(() => {
     const data = {}

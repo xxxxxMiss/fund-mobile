@@ -18,9 +18,9 @@ export default {
         return state.index.list
       })
       if (append) {
-        list = [...list, ...res.rank]
+        list = [...list, ...res]
       } else {
-        list = res.rank
+        list = res
       }
       yield put({
         type: 'setState',
