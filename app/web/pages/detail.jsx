@@ -8,77 +8,78 @@ import { Helmet, useSelector } from 'umi'
 export default function FundDetail() {
   const { detail: data } = useSelector(state => state.detail)
   const yearFmt = fmtRate(data.lastYearGrowth)
-  const dayFmt = fmtRate(data.dayGrowth)
+  const latestInfo = data?.netWorth?.[0] ?? {}
+  const dayFmt = fmtRate(latestInfo.equityReturn)
   const [isSelected, setIsSelected] = useState(false)
-  const [options, setOptions] = useState({
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-      },
-      show: false,
-    },
-    grid: {
-      containLabel: true,
-      left: 'left',
-      right: 0,
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: data.xAxis,
-      axisPointer: {
-        show: true,
-      },
-      max: 'dataMax',
-    },
-    yAxis: {
-      type: 'value',
-      axisPointer: {
-        show: true,
-        label: {
-          precision: 2,
-        },
-      },
-      axisLabel: {
-        formatter: value => {
-          return Number(value).toFixed(2) + '%'
-        },
-        showMaxLabel: true,
-      },
-    },
-    series: [
-      {
-        data: data.yAxis,
-        type: 'line',
-        smooth: true,
-        areaStyle: {
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              {
-                offset: 0,
-                color: 'rgba(92, 136, 248, 0.15)', // 0% 处的颜色
-              },
-              {
-                offset: 1,
-                color: 'rgba(92, 136, 248, 0)', // 100% 处的颜色
-              },
-            ],
-          },
-        },
-      },
-    ],
-  })
+  // const [options, setOptions] = useState({
+  //   tooltip: {
+  //     trigger: 'axis',
+  //     axisPointer: {
+  //       type: 'cross',
+  //     },
+  //     show: false,
+  //   },
+  //   grid: {
+  //     containLabel: true,
+  //     left: 'left',
+  //     right: 0,
+  //   },
+  //   xAxis: {
+  //     type: 'category',
+  //     boundaryGap: false,
+  //     data: data.xAxis,
+  //     axisPointer: {
+  //       show: true,
+  //     },
+  //     max: 'dataMax',
+  //   },
+  //   yAxis: {
+  //     type: 'value',
+  //     axisPointer: {
+  //       show: true,
+  //       label: {
+  //         precision: 2,
+  //       },
+  //     },
+  //     axisLabel: {
+  //       formatter: value => {
+  //         return Number(value).toFixed(2) + '%'
+  //       },
+  //       showMaxLabel: true,
+  //     },
+  //   },
+  //   series: [
+  //     {
+  //       data: data.yAxis,
+  //       type: 'line',
+  //       smooth: true,
+  //       areaStyle: {
+  //         color: {
+  //           type: 'linear',
+  //           x: 0,
+  //           y: 0,
+  //           x2: 0,
+  //           y2: 1,
+  //           colorStops: [
+  //             {
+  //               offset: 0,
+  //               color: 'rgba(92, 136, 248, 0.15)', // 0% 处的颜色
+  //             },
+  //             {
+  //               offset: 1,
+  //               color: 'rgba(92, 136, 248, 0)', // 100% 处的颜色
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     },
+  //   ],
+  // })
 
-  useEffect(() => {
-    const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
-    setIsSelected(selected.includes(data.code))
-  }, [])
+  // useEffect(() => {
+  //   const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+  //   setIsSelected(selected.includes(data.code))
+  // }, [])
 
   const handleSelect = () => {
     const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
@@ -112,14 +113,12 @@ export default function FundDetail() {
           <div className={sbx('day')} style={{ color: dayFmt.color }}>
             {dayFmt.text}
           </div>
-          <div className={sbx('value')}>{data.netWorth}</div>
+          {/* <div className={sbx('value')}>{data.netWorth}</div> */}
         </div>
         <div className={sbx('text-container')}>
           <span className={sbx('text')}>近一年涨幅</span>
           <span className={sbx('text')}>日涨跌幅</span>
-          <span className={sbx('text')}>
-            净值 {fmtDate(data.expectWorthDate)}
-          </span>
+          <span className={sbx('text')}>净值 {}</span>
         </div>
       </div>
       {/* <div className={sbx('block-chart')}>

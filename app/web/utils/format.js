@@ -26,6 +26,6 @@ export const fmtNumber = (field, withPrefix) => {
   field = Number(field)
   return {
     color: field === 0 ? '#999' : field > 0 ? 'red' : 'green',
-    text: withPrefix ? `${field > 0 ? '+' : '-'}${field}` : field,
+    text: withPrefix ? `${field > 0 ? '+' : ''}${field}` : field,
   }
 }

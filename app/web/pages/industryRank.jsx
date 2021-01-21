@@ -21,9 +21,9 @@ export default function IndustryRank(props) {
         <div className={sbx('list-item')}>板块名称</div>
         {(props.fixedList || []).map(item => {
           return (
-            <div className={sbx('list-item')} key={item.code}>
-              <div className={sbx('name')}>{item.name}</div>
-              <div className={sbx('desc-row')}>{item.code}</div>
+            <div className={sbx('list-item')} key={item.indCode}>
+              <div className={sbx('name')}>{item.indkName}</div>
+              <div className={sbx('desc-row')}>{item.indCode}</div>
             </div>
           )
         })}
@@ -32,35 +32,32 @@ export default function IndustryRank(props) {
         <div className={sbx('scroller-wrapper')}>
           <div className={sbx('list-item')}>
             <div className={sbx('item')}>最新价格</div>
-            <div className={sbx('item')}>涨跌额</div>
             <div className={sbx('item')}>涨跌幅度</div>
-            <div className={sbx('item')}>成交量</div>
+            <div className={sbx('item')}>换手率</div>
+            <div className={sbx('item')}>领涨股</div>
           </div>
           {(props.list || []).map(item => {
-            const { text, color } = fmtRate(item.changePercent)
-            const averagePrice = fmtNumber(item.averagePrice)
-            const priceChange = fmtNumber(item.priceChange)
-            const turnover = fmtNumber(item.turnover)
+            // 最新价格
+            const fmtPrice = fmtNumber(item.price)
+            // 涨幅百分比
+            const fmtGrowth = fmtRate(item.growth)
+            // 换手率
+            const fmtHandsRate = fmtRate(item.changeHandsRate)
             return (
-              <div className={sbx('list-item')} key={item.code}>
-                <div
-                  className={sbx('item')}
-                  style={{ color: averagePrice.color }}
-                >
-                  {averagePrice.text}
+              <div className={sbx('list-item')} key={item.indCode}>
+                <div className={sbx('item')} style={{ color: fmtPrice.color }}>
+                  {fmtPrice.text}
+                </div>
+                <div className={sbx('item')} style={{ color: fmtGrowth.color }}>
+                  {fmtGrowth.text}
                 </div>
                 <div
                   className={sbx('item')}
-                  style={{ color: priceChange.color }}
+                  style={{ color: fmtHandsRate.color }}
                 >
-                  {priceChange.text}
+                  {fmtHandsRate.text}
                 </div>
-                <div className={sbx('item')} style={{ color }}>
-                  {text}
-                </div>
-                <div className={sbx('item')} style={{ color: turnover.color }}>
-                  {turnover.text}
-                </div>
+                <div className={sbx('item')}>{item.leaderStockName}</div>
               </div>
             )
           })}

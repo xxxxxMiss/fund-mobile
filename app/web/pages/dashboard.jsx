@@ -1,35 +1,34 @@
 import { get } from 'utils/request'
-import { fmtRate } from 'utils/format'
+import { fmtRate, fmtNumber } from 'utils/format'
 
-const getColor = field => {
-  field = Number(field)
-  return {
-    color: field === 0 ? '#999' : field > 0 ? 'red' : 'green',
-  }
-}
 export default function Dashboard(props) {
   return (
     <div className={sbx('page-dashboard')}>
       <div className={sbx('card-container')}>
         {(props.list || []).map(item => {
-          const { text, color } = fmtRate(item.changePercent)
+          const fmtGrowth = fmtRate(item.growth)
+          const fmtPrice = fmtNumber(item.price, true)
+          const fmtExponent = fmtNumber(item.exponent)
           return (
-            <div className={sbx('card')} key={item.code}>
-              <div className={sbx('name')}>{item.name}</div>
+            <div className={sbx('card')} key={item.stockCode}>
+              <div className={sbx('name')}>{item.stockName}</div>
               <div
                 className={sbx('price')}
-                style={getColor(item.changePercent)}
+                style={{ color: fmtExponent.color }}
               >
-                {item.price}
+                {fmtExponent.text}
               </div>
               <span
                 className={sbx('price-change')}
-                style={getColor(item.priceChange)}
+                style={{ color: fmtPrice.color }}
               >
-                {item.priceChange}
+                {fmtPrice.text}
               </span>
-              <span className={sbx('change-percent')} style={{ color }}>
-                {text}
+              <span
+                className={sbx('change-percent')}
+                style={{ color: fmtGrowth.color }}
+              >
+                {fmtGrowth.text}
               </span>
             </div>
           )
