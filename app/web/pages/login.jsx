@@ -13,8 +13,7 @@ export default function Login() {
     post('/v1/fund/login', {
       account,
       password,
-    }).then(token => {
-      localStorage.setItem('fund-token', token)
+    }).then(() => {
       Toast.success('登录成功')
       history.replace('/mine')
     })

@@ -20,7 +20,7 @@ export default {
   ],
   // plugins: [join(webRoot, 'plugins/umi-plugin-register-service-worker.js')],
   ssr: {
-    devServerRender: false,
+    devServerRender: true,
   },
   hash: true,
   title: false,

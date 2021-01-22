@@ -7,6 +7,7 @@ class FundController extends Controller {
       url: '/user/login',
       data: ctx.request.body,
     })
+    ctx.set('Set-Cookie', `token=${res.data}`)
     ctx.body = res
   }
   async restore() {

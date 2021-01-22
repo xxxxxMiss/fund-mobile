@@ -1,4 +1,5 @@
 const axios = require('axios')
+const { getCookie } = require('./cookie')
 // import { message } from 'antd'
 
 const request = (module.exports = function request(config) {
@@ -12,10 +13,6 @@ const request = (module.exports = function request(config) {
   const instance = axios.create()
 
   instance.interceptors.request.use(cfg => {
-    const token = localStorage.getItem('fund-token')
-    if (token) {
-      cfg.headers.token = token
-    }
     return cfg
   })
 

@@ -31,41 +31,49 @@ const Mine = () => {
   }
 
   useEffect(() => {
-    post('/v1/fund/restore').then(() => {})
+    post('/v1/fund/restore').then(res => {
+      const data = JSON.parse(res || '{}')
+      const holdShare = data.fundMemorySetting.reduce((holds, item) => {
+        holds[item.code] = item.holdShare
+        return holds
+      }, {})
+      localStorage.setItem('fund-selected', JSON.stringify(data.fundCode))
+      localStorage.setItem('fund-hold', JSON.stringify(holdShare))
+    })
   }, [])
 
-  // useEffect(() => {
-  //   const fetchMyFund = () => {
-  //     const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
-  //     get('/v1/fund/getMyFund', {
-  //       params: {
-  //         code: selected.join(','),
-  //       },
-  //     }).then(list => {
-  //       setList(list)
-  //       getData(list)
-  //     })
-  //   }
-  //   fetchMyFund()
-  //   timerRef.current = setInterval(() => {
-  //     if (
-  //       0 < dayjs().day() &&
-  //       dayjs().day() < 6 &&
-  //       (dayjs().isBetween(
-  //         dayjs().hour(9).minute(30),
-  //         dayjs().hour(11).minute(30),
-  //         'hour',
-  //         '[]'
-  //       ) ||
-  //         dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]'))
-  //     ) {
-  //       fetchMyFund()
-  //     }
-  //   }, 3000)
-  //   return () => {
-  //     clearInterval(timerRef.current)
-  //   }
-  // }, [])
+  useEffect(() => {
+    const fetchMyFund = () => {
+      const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+      get('/v1/fund/getMyFund', {
+        params: {
+          code: selected.join(','),
+        },
+      }).then(list => {
+        setList(list)
+        getData(list)
+      })
+    }
+    fetchMyFund()
+    timerRef.current = setInterval(() => {
+      if (
+        0 < dayjs().day() &&
+        dayjs().day() < 6 &&
+        (dayjs().isBetween(
+          dayjs().hour(9).minute(30),
+          dayjs().hour(11).minute(30),
+          'hour',
+          '[]'
+        ) ||
+          dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]'))
+      ) {
+        fetchMyFund()
+      }
+    }, 3000)
+    return () => {
+      clearInterval(timerRef.current)
+    }
+  }, [])
 
   const handleBlur = useCallback(() => {
     const data = {}
@@ -74,7 +82,7 @@ const Mine = () => {
     })
     localStorage.setItem('fund-hold', JSON.stringify(data))
     setKeyboardVisible(false)
-  })
+  }, [])
 
   useEffect(() => {
     let sum = 0

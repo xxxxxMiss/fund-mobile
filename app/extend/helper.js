@@ -51,7 +51,7 @@ const request = async (ctx, { url, data, method, headers = {} }) => {
     headers: {
       // Token: '217a71ac3b052446e98d3e52e512d006',
       // token: 'ykAIlw6j9d',
-      token: ctx.headers.token,
+      token: exports.parseCookie(ctx).token,
       ...headers,
     },
   })
