@@ -12,6 +12,7 @@ const Mine = () => {
   const [calcData, setCalcData] = useState({})
   const [totalProfit, setTotalProfit] = useState(0)
   const [keyboardVisible, setKeyboardVisible] = useState(false)
+  const [config, setConfig] = useState({})
   const timerRef = useRef(null)
   const keyboardRef = useRef(null)
 
@@ -32,7 +33,8 @@ const Mine = () => {
 
   useEffect(() => {
     post('/v1/fund/restore').then(res => {
-      const data = JSON.parse(res || '{}')
+      if (!res) return
+      const data = JSON.parse(res)
       const holdShare = data.fundMemorySetting.reduce((holds, item) => {
         holds[item.code] = item.holdShare
         return holds
@@ -101,6 +103,11 @@ const Mine = () => {
     }
   }, [keyboardVisible])
 
+  useEffect(() => {
+    const config = JSON.parse(localStorage.getItem('fund-config') || '{}')
+    setConfig(config)
+  }, [])
+
   return (
     <div className={sbx('page-mine')}>
       <div className={sbx('profit-overview')}>
@@ -128,6 +135,7 @@ const Mine = () => {
               <div className={sbx('row-num')}>
                 <span>
                   <InputItem
+                    disabled={config.editHoldShare}
                     type="money"
                     moneyKeyboardAlign="left"
                     autoAdjustHeight

@@ -1,9 +1,10 @@
-import { TabBar, NavBar, Icon, List, InputItem } from 'antd-mobile'
+import { TabBar, NavBar, Icon, List, Drawer, InputItem } from 'antd-mobile'
 import { useHistory, useLocation } from 'umi'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { MyIcon } from 'components/MyIcon'
+import Sidebar from './sidebar'
 dayjs.locale('zh-cn')
 
 const getTitle = location => {
@@ -38,6 +39,7 @@ export default function AppLayout(props) {
   )
   const [inSearch, setInSearch] = useState(false)
   const [value, setValue] = useState('')
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const inputRef = useRef(null)
   const gotoPage = (path, key) => {
     history.push(path + '?key=' + key)
@@ -57,10 +59,24 @@ export default function AppLayout(props) {
     if (inSearch) inputRef?.current?.focus()
   }, [inSearch])
 
+  const handleVisible = useCallback(() => {
+    setDrawerVisible(prev => !prev)
+  }, [])
+
   // TODO: fix it
   // temp resolved
   return (
     <div className={sbx('app-layout')}>
+      <Drawer
+        open={drawerVisible}
+        onOpenChange={handleVisible}
+        key="1"
+        position="right"
+        sidebar={<Sidebar />}
+        style={{ minHeight: document.documentElement.clientHeight }}
+      >
+        {''}
+      </Drawer>
       <div className={sbx('navbar-container')}>
         <NavBar
           mode="light"
@@ -75,7 +91,7 @@ export default function AppLayout(props) {
               type="search"
               style={{ marginRight: '16px' }}
             />,
-            <Icon key="1" type="ellipsis" />,
+            <Icon key="1" type="ellipsis" onClick={handleVisible} />,
           ]}
         >
           {inSearch ? (
