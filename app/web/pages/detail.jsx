@@ -6,10 +6,9 @@ import dayjs from 'dayjs'
 import { getFilterOptions } from 'utils/config'
 import { Helmet, useSelector } from 'umi'
 export default function FundDetail() {
-  const { detail: data } = useSelector(state => state.detail)
-  const yearFmt = fmtRate(data.lastYearGrowth)
-  const latestInfo = data?.netWorth?.[0] ?? {}
-  const dayFmt = fmtRate(latestInfo.equityReturn)
+  const { detail: data } = useSelector(state => state.detail || {})
+  const yearFmt = fmtRate(data.dayGrowth)
+  const dayFmt = fmtRate(data.dayNetWorth)
   const [isSelected, setIsSelected] = useState(false)
   // const [options, setOptions] = useState({
   //   tooltip: {
@@ -76,10 +75,10 @@ export default function FundDetail() {
   //   ],
   // })
 
-  // useEffect(() => {
-  //   const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
-  //   setIsSelected(selected.includes(data.code))
-  // }, [])
+  useEffect(() => {
+    const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+    setIsSelected(selected.includes(data.code))
+  }, [data])
 
   const handleSelect = () => {
     const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
@@ -95,6 +94,11 @@ export default function FundDetail() {
     localStorage.setItem('fund-selected', JSON.stringify(selected))
   }
 
+  const { manager } = data
+  const fmtlastMonthGrowth = fmtRate(data.lastMonthGrowth)
+  const fmtlastThreeMonthsGrowth = fmtRate(data.lastThreeMonthsGrowth)
+  const fmtlastSixMonthsGrowth = fmtRate(data.lastSixMonthsGrowth)
+  const fmtlastYearGrowth = fmtRate(data.lastYearGrowth)
   return (
     <div className={sbx('page-fund-detail')}>
       <Helmet>
@@ -113,13 +117,47 @@ export default function FundDetail() {
           <div className={sbx('day')} style={{ color: dayFmt.color }}>
             {dayFmt.text}
           </div>
-          {/* <div className={sbx('value')}>{data.netWorth}</div> */}
         </div>
         <div className={sbx('text-container')}>
-          <span className={sbx('text')}>近一年涨幅</span>
           <span className={sbx('text')}>日涨跌幅</span>
-          <span className={sbx('text')}>净值 {}</span>
+          <span className={sbx('text')}>净值</span>
         </div>
+      </div>
+
+      <div className={sbx('block-overview')}>
+        <div className={sbx('title')}>历史业绩</div>
+        <div className={sbx('history-item')}>
+          近一月：
+          <span style={{ color: fmtlastMonthGrowth.color }}>
+            {fmtlastMonthGrowth.text}
+          </span>
+        </div>
+        <div className={sbx('history-item')}>
+          近三月：
+          <span style={{ color: fmtlastThreeMonthsGrowth.color }}>
+            {fmtlastThreeMonthsGrowth.text}
+          </span>
+        </div>
+        <div className={sbx('history-item')}>
+          近六月：
+          <span style={{ color: fmtlastSixMonthsGrowth.color }}>
+            {fmtlastSixMonthsGrowth.text}
+          </span>
+        </div>
+        <div className={sbx('history-item')}>
+          近一年：
+          <span style={{ color: fmtlastYearGrowth.color }}>
+            {fmtlastYearGrowth.text}
+          </span>
+        </div>
+      </div>
+
+      <div className={sbx('block-overview')}>
+        <div className={sbx('title')}>基金经理</div>
+        <div className={sbx('manager')}>{manager.manager}</div>
+        <div className={sbx('work')}>从业{manager.workTime}</div>
+        <div className={sbx('fund-size')}>管理基金规模：{manager.fundSize}</div>
+        <img className={sbx('avatar')} src={manager.faceImg} />
       </div>
       {/* <div className={sbx('block-chart')}>
         <ReactEchartsCore
