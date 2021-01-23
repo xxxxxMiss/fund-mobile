@@ -73,7 +73,7 @@ export default function AppLayout(props) {
         key="1"
         position="right"
         sidebar={<Sidebar />}
-        style={{ minHeight: document.documentElement.clientHeight }}
+        style={{ minHeight: '100%' }}
       >
         {''}
       </Drawer>

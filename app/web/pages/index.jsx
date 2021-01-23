@@ -41,13 +41,17 @@ const Home = props => {
   }, [])
 
   const fetchList = (prevList = [], { pageIndex, fundType }) => {
-    return post('/v1/fund/rank', { pageIndex, fundType: [fundType] }).then(
-      res => {
-        setList(prevList.concat(res?.rank ?? []))
-        bsRef.current.finishPullUp()
-        bsRef.current.refresh()
-      }
-    )
+    return post('/v1/fund/rank', {
+      fundCompany: '0',
+      fundType: 'all',
+      sort: 'rzdf',
+      pageIndex,
+      pageSize: 10,
+    }).then(res => {
+      setList(prevList.concat(res?.rank ?? []))
+      bsRef.current.finishPullUp()
+      bsRef.current.refresh()
+    })
   }
   useEffect(() => {
     if (helperRef.current.init) return

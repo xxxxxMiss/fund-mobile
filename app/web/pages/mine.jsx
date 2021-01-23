@@ -3,6 +3,7 @@ import { InputItem } from 'antd-mobile'
 import { fmtRate, fmtNumber } from 'utils/format'
 import { getEvaluateProfit } from 'utils/calc'
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useHistory } from 'umi'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 dayjs.extend(isBetween)
@@ -15,6 +16,7 @@ const Mine = () => {
   const [config, setConfig] = useState({})
   const timerRef = useRef(null)
   const keyboardRef = useRef(null)
+  const history = useHistory()
 
   const getData = list => {
     const hold = JSON.parse(localStorage.getItem('fund-hold') || '{}')
@@ -47,6 +49,7 @@ const Mine = () => {
   useEffect(() => {
     const fetchMyFund = () => {
       const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
+      if (!selected.length) return
       get('/v1/fund/getMyFund', {
         params: {
           code: selected.join(','),
@@ -110,70 +113,89 @@ const Mine = () => {
 
   return (
     <div className={sbx('page-mine')}>
-      <div className={sbx('profit-overview')}>
-        <div className={sbx('profit-row')}>
-          预估收益：
-          <span className={sbx('profit')}>{totalProfit}</span>
-        </div>
-      </div>
-      <div className={sbx('list')}>
-        {list.map(item => {
-          const { text: expectGrowth, color } = fmtRate(item.expectGrowth)
-          const fmtProfit = fmtNumber(calcData[item.code]?.[1])
-
-          return (
-            <div className={sbx('card')} key={item.code}>
-              <h3 className={sbx('name')}>
-                {item.name}
-                <span className={sbx('code')}>{item.code}</span>
-              </h3>
-              <div className={sbx('row-text')}>
-                <span>持有份额</span>
-                <span>估算涨幅</span>
-                <span>估算收益</span>
-              </div>
-              <div className={sbx('row-num')}>
-                <span>
-                  <InputItem
-                    disabled={config.editHoldShare}
-                    type="money"
-                    moneyKeyboardAlign="left"
-                    autoAdjustHeight
-                    onBlur={handleBlur}
-                    onVirtualKeyboardConfirm={() => {
-                      setKeyboardVisible(false)
-                    }}
-                    onFocus={() => {
-                      setKeyboardVisible(true)
-                    }}
-                    value={calcData[item.code]?.[0]}
-                    onChange={val => {
-                      setCalcData(prev => {
-                        return {
-                          ...prev,
-                          [item.code]: [
-                            val,
-                            getEvaluateProfit({ ...item, holdShare: val }),
-                          ],
-                        }
-                      })
-                    }}
-                    placeholder="请输入持有份额"
-                  />
-                </span>
-                <span style={{ color }}>{expectGrowth}</span>
-                <span
-                  style={{
-                    color: fmtProfit.color,
-                  }}
-                >
-                  {fmtProfit.text}
-                </span>
-              </div>
+      {list.length ? (
+        <>
+          <div className={sbx('profit-overview')}>
+            <div className={sbx('profit-row')}>
+              预估收益：
+              <span className={sbx('profit')}>{totalProfit}</span>
             </div>
-          )
-        })}
-      </div>
+          </div>
+          <div className={sbx('list')}>
+            {list.map(item => {
+              const { text: expectGrowth, color } = fmtRate(item.expectGrowth)
+              const fmtProfit = fmtNumber(calcData[item.code]?.[1])
+
+              return (
+                <div className={sbx('card')} key={item.code}>
+                  <h3 className={sbx('name')}>
+                    {item.name}
+                    <span className={sbx('code')}>{item.code}</span>
+                  </h3>
+                  <div className={sbx('row-text')}>
+                    <span>持有份额</span>
+                    <span>估算涨幅</span>
+                    <span>估算收益</span>
+                  </div>
+                  <div className={sbx('row-num')}>
+                    <span>
+                      <InputItem
+                        disabled={config.editHoldShare}
+                        type="money"
+                        moneyKeyboardAlign="left"
+                        autoAdjustHeight
+                        onBlur={handleBlur}
+                        onVirtualKeyboardConfirm={() => {
+                          setKeyboardVisible(false)
+                        }}
+                        onFocus={() => {
+                          setKeyboardVisible(true)
+                        }}
+                        value={calcData[item.code]?.[0]}
+                        onChange={val => {
+                          setCalcData(prev => {
+                            return {
+                              ...prev,
+                              [item.code]: [
+                                val,
+                                getEvaluateProfit({ ...item, holdShare: val }),
+                              ],
+                            }
+                          })
+                        }}
+                        placeholder="请输入持有份额"
+                      />
+                    </span>
+                    <span style={{ color }}>{expectGrowth}</span>
+                    <span
+                      style={{
+                        color: fmtProfit.color,
+                      }}
+                    >
+                      {fmtProfit.text}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </>
+      ) : (
+        <div className={sbx('empty-container')}>
+          <div className={sbx('empty-text')}>暂无自选基金</div>
+          <div className={sbx('select-tips')}>
+            您可以点击右上角搜索按钮添加自选，
+            <br />
+            或者登录同步PC端数据
+          </div>
+          <div
+            className={sbx('btn-login')}
+            onClick={() => history.push('/login')}
+          >
+            登录
+          </div>
+        </div>
+      )}
     </div>
   )
 }

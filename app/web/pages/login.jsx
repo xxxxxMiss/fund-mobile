@@ -1,15 +1,16 @@
 import { InputItem, List, Button, Toast } from 'antd-mobile'
 import { MyIcon } from 'components/MyIcon'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { post } from 'utils/request'
 import { useHistory } from 'umi'
 
 export default function Login() {
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
+  const [inputType, setInputType] = useState('password')
   const history = useHistory()
 
-  const login = () => {
+  const login = useCallback(() => {
     post('/v1/fund/login', {
       account,
       password,
@@ -17,7 +18,15 @@ export default function Login() {
       Toast.success('登录成功')
       history.replace('/mine')
     })
-  }
+  }, [])
+
+  const switchIcon = useCallback(() => {
+    if (inputType === 'password') {
+      setInputType('text')
+    } else {
+      setInputType('password')
+    }
+  }, [inputType])
 
   return (
     <div className={sbx('page-login')}>
@@ -33,12 +42,22 @@ export default function Login() {
           placeholder="密码"
           value={password}
           onChange={val => setPassword(val)}
+          type={inputType}
+          extra={
+            inputType === 'password' ? (
+              <MyIcon type="icon-visible" onClick={switchIcon} />
+            ) : (
+              <MyIcon type="icon-hidden" onClick={switchIcon} />
+            )
+          }
         >
           <MyIcon type="icon-password" />
         </InputItem>
       </List>
 
-      <Button onClick={login}>登录</Button>
+      <Button onClick={login} disabled={!account || !password}>
+        登录
+      </Button>
     </div>
   )
 }

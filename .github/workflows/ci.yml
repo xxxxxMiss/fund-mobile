@@ -9,25 +9,6 @@ on:
       - '*.md'
 
 jobs:
-  build-frontend:
-    runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: /root/fund-mobile
-    steps:
-      - name: sync remote code
-        run: |
-          git fetch -a
-          git reset --hard origin/master
-          git clean -df
-      - name: install deps
-        run: npm install
-      - name: build web
-        run: npm run build
-      - name: restart server
-        run: npm stop
-      - run: npm start
-
   # build-frontend-dogpack:
   #   runs-on: dogpack
   #   defaults:
