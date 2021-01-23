@@ -1,4 +1,4 @@
-import { get, post } from 'utils/request'
+import { get } from 'utils/request'
 import { InputItem } from 'antd-mobile'
 import { fmtRate, fmtNumber } from 'utils/format'
 import { getEvaluateProfit } from 'utils/calc'
@@ -34,19 +34,6 @@ const Mine = () => {
   }
 
   useEffect(() => {
-    post('/v1/fund/restore').then(res => {
-      if (!res) return
-      const data = JSON.parse(res)
-      const holdShare = data.fundMemorySetting.reduce((holds, item) => {
-        holds[item.code] = item.holdShare
-        return holds
-      }, {})
-      localStorage.setItem('fund-selected', JSON.stringify(data.fundCode))
-      localStorage.setItem('fund-hold', JSON.stringify(holdShare))
-    })
-  }, [])
-
-  useEffect(() => {
     const fetchMyFund = () => {
       const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
       if (!selected.length) return
@@ -55,8 +42,10 @@ const Mine = () => {
           code: selected.join(','),
         },
       }).then(list => {
-        setList(list)
-        getData(list)
+        if (list) {
+          setList(list)
+          getData(list)
+        }
       })
     }
     fetchMyFund()

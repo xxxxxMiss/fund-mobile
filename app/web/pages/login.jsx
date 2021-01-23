@@ -14,11 +14,18 @@ export default function Login() {
     post('/v1/fund/login', {
       account,
       password,
-    }).then(() => {
-      Toast.success('登录成功')
-      history.replace('/mine')
+    }).then(res => {
+      if (res) {
+        localStorage.setItem(
+          'fund-selected',
+          JSON.stringify(res.fundCode || [])
+        )
+        localStorage.setItem('fund-hold', JSON.stringify(res.holdShare || {}))
+        Toast.success('登录成功')
+        history.replace('/mine')
+      }
     })
-  }, [])
+  }, [account, password])
 
   const switchIcon = useCallback(() => {
     if (inputType === 'password') {

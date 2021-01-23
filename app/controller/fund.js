@@ -7,15 +7,31 @@ class FundController extends Controller {
       url: '/user/login',
       data: ctx.request.body,
     })
-    ctx.set('Set-Cookie', `token=${res.data}`)
-    ctx.body = res
-  }
-  async restore() {
-    const { ctx } = this
-    const res = await ctx.helper.post(ctx, {
-      url: '/config/restore',
-    })
-    ctx.body = res
+    if (res.data) {
+      const restore = await ctx.helper.post(ctx, {
+        url: '/config/restore',
+      })
+      if (restore.code != 200) {
+        ctx.body = restore
+      } else {
+        const { fundMemorySetting = [], fundCode = [] } = JSON.parse(
+          restore.data || '{}'
+        )
+        const holdShare = fundMemorySetting.reduce((holds, item) => {
+          holds[item.code] = item.holdShare
+          return holds
+        }, {})
+        ctx.body = {
+          code: 200,
+          data: {
+            holdShare,
+            fundCode,
+          },
+        }
+      }
+    } else {
+      ctx.body = res
+    }
   }
   async rank() {
     const { ctx } = this

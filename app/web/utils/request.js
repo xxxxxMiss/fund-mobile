@@ -1,8 +1,8 @@
-const axios = require('axios')
-const { getCookie } = require('./cookie')
-// import { message } from 'antd'
+import axios from 'axios'
+import { Toast } from 'antd-mobile'
+import { isBrowser } from 'umi'
 
-const request = (module.exports = function request(config) {
+export default function request(config) {
   const isServer = typeof window === 'undefined'
   const CONFIG = {
     baseURL: isServer ? process.env.ssrAxiosBaseURL : process.env.axiosBaseURL,
@@ -17,22 +17,21 @@ const request = (module.exports = function request(config) {
   })
 
   instance.interceptors.response.use(res => {
-    const { code, data, message: msg } = res.data
+    const { code, data, msg, message } = res.data
     if (config.fullRes) {
       return res
     }
     if (code != 200) {
-      // message.error(msg)
-
+      if (isBrowser()) Toast.fail(msg || message)
       return null
     }
     return data
   })
 
   return instance.request({ ...CONFIG, ...config })
-})
+}
 
-module.exports.get = (url, config) => {
+export const get = (url, config) => {
   return request({
     url,
     method: 'GET',
@@ -40,7 +39,7 @@ module.exports.get = (url, config) => {
   })
 }
 
-module.exports.post = (url, data, config) => {
+export const post = (url, data, config) => {
   return request({
     url,
     data,
