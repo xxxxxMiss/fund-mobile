@@ -1,4 +1,10 @@
 export const fmtRate = rate => {
+  if (Number.isNaN(Number(rate))) {
+    return {
+      text: '--',
+      color: '#999',
+    }
+  }
   let fmtText = '--'
   if (rate) {
     rate = Number(rate).toFixed(2)
@@ -18,7 +24,7 @@ export const fmtDate = dateStr => {
 }
 
 export const fmtNumber = (field, withPrefix) => {
-  if (!field)
+  if (!field || Number.isNaN(Number(field)))
     return {
       color: '#999',
       text: '--',

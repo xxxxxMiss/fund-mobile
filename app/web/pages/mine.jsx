@@ -81,7 +81,11 @@ const Mine = () => {
   useEffect(() => {
     let sum = 0
     Object.keys(calcData).forEach(code => {
-      sum += Number(calcData[code]?.[1] || 0)
+      let num = Number(calcData[code]?.[1] || 0)
+      if (Number.isNaN(num)) {
+        num = 0
+      }
+      sum += num
     })
     setTotalProfit(sum.toFixed(2))
   }, [calcData])

@@ -19,6 +19,7 @@ export const getEvaluateProfit = ({
   } else if (expectWorth) {
     sum = ((expectWorth - netWorth) * num).toFixed(2)
   }
+  if (Number.isNaN(sum)) return 0
   return sum
 }
 
