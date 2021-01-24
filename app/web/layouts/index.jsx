@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { MyIcon } from 'components/MyIcon'
+import AppContext, { defaultConfig, changeConfig } from 'components/AppContext'
 import Sidebar from './sidebar'
 dayjs.locale('zh-cn')
 
@@ -63,96 +64,103 @@ export default function AppLayout(props) {
     setDrawerVisible(prev => !prev)
   }, [])
 
-  // TODO: fix it
-  // temp resolved
+  useEffect(() => {
+    const config = localStorage.getItem('fund-config')
+    if (config) {
+      changeConfig(JSON.parse(config))
+    }
+  }, [])
+
   return (
-    <div className={sbx('app-layout')}>
-      <Drawer
-        open={drawerVisible}
-        onOpenChange={handleVisible}
-        key="1"
-        position="right"
-        sidebar={<Sidebar />}
-        style={{ minHeight: '100%' }}
-      >
-        {''}
-      </Drawer>
-      <div className={sbx('navbar-container')}>
-        <NavBar
-          mode="light"
-          icon={<Icon type="left" />}
-          onLeftClick={() => history.goBack()}
-          rightContent={[
-            <Icon
-              key="0"
-              onClick={() => {
-                setInSearch(true)
-              }}
-              type="search"
-              style={{ marginRight: '16px' }}
-            />,
-            <Icon key="1" type="ellipsis" onClick={handleVisible} />,
-          ]}
+    <AppContext.Provider value={defaultConfig}>
+      <div className={sbx('app-layout')}>
+        <Drawer
+          open={drawerVisible}
+          onOpenChange={handleVisible}
+          key="1"
+          position="right"
+          sidebar={<Sidebar />}
+          style={{ minHeight: '100%' }}
         >
-          {inSearch ? (
-            <List>
-              <InputItem
-                ref={inputRef}
-                clear
-                onChange={value => setValue(value)}
-                value={value}
-                placeholder="基金代码"
-                onVirtualKeyboardConfirm={handleSearch}
-                type="money"
-                moneyKeyboardAlign="left"
-              />
-            </List>
-          ) : (
-            getTitle(location)
-          )}
-        </NavBar>
+          {''}
+        </Drawer>
+        <div className={sbx('navbar-container')}>
+          <NavBar
+            mode="light"
+            icon={<Icon type="left" />}
+            onLeftClick={() => history.goBack()}
+            rightContent={[
+              <Icon
+                key="0"
+                onClick={() => {
+                  setInSearch(true)
+                }}
+                type="search"
+                style={{ marginRight: '16px' }}
+              />,
+              <Icon key="1" type="ellipsis" onClick={handleVisible} />,
+            ]}
+          >
+            {inSearch ? (
+              <List>
+                <InputItem
+                  ref={inputRef}
+                  clear
+                  onChange={value => setValue(value)}
+                  value={value}
+                  placeholder="基金代码"
+                  onVirtualKeyboardConfirm={handleSearch}
+                  type="money"
+                  moneyKeyboardAlign="left"
+                />
+              </List>
+            ) : (
+              getTitle(location)
+            )}
+          </NavBar>
+        </div>
+        {props.children}
+        <div className={sbx('tabbar-container')}>
+          <TabBar
+            unselectedTintColor="#949494"
+            tintColor="#33A3F4"
+            barTintColor="white"
+          >
+            <TabBar.Item
+              title="基金排行"
+              key="rank"
+              icon={<MyIcon type="icon-pic" />}
+              selectedIcon={<MyIcon type="icon-pic-fill" />}
+              onPress={() => gotoPage('/', 'rank')}
+              selected={selectedKey === 'rank'}
+            ></TabBar.Item>
+            <TabBar.Item
+              icon={<MyIcon type="icon-all" />}
+              selectedIcon={<MyIcon type="icon-all-fill" />}
+              title="行业板块"
+              key="industry"
+              onPress={() => gotoPage('/industryRank', 'industry')}
+              selected={selectedKey === 'industry'}
+            ></TabBar.Item>
+            <TabBar.Item
+              icon={<MyIcon type="icon-integral" />}
+              selectedIcon={<MyIcon type="icon-integral-fill" />}
+              title="大盘指数"
+              key="dashboard"
+              onPress={() => gotoPage('/dashboard', 'dashboard')}
+              selected={selectedKey === 'dashboard'}
+            ></TabBar.Item>
+            <TabBar.Item
+              icon={<MyIcon type="icon-add-cart" />}
+              selectedIcon={<MyIcon type="icon-add-cart-fill" />}
+              selected={selectedKey === 'mine'}
+              onPress={() => gotoPage('/mine', 'mine')}
+              title="自选"
+              key="mine"
+            ></TabBar.Item>
+          </TabBar>
+        </div>
       </div>
-      {props.children}
-      <div className={sbx('tabbar-container')}>
-        <TabBar
-          unselectedTintColor="#949494"
-          tintColor="#33A3F4"
-          barTintColor="white"
-        >
-          <TabBar.Item
-            title="基金排行"
-            key="rank"
-            icon={<MyIcon type="icon-pic" />}
-            selectedIcon={<MyIcon type="icon-pic-fill" />}
-            onPress={() => gotoPage('/', 'rank')}
-            selected={selectedKey === 'rank'}
-          ></TabBar.Item>
-          <TabBar.Item
-            icon={<MyIcon type="icon-all" />}
-            selectedIcon={<MyIcon type="icon-all-fill" />}
-            title="行业板块"
-            key="industry"
-            onPress={() => gotoPage('/industryRank', 'industry')}
-            selected={selectedKey === 'industry'}
-          ></TabBar.Item>
-          <TabBar.Item
-            icon={<MyIcon type="icon-integral" />}
-            selectedIcon={<MyIcon type="icon-integral-fill" />}
-            title="大盘指数"
-            key="dashboard"
-            onPress={() => gotoPage('/dashboard', 'dashboard')}
-            selected={selectedKey === 'dashboard'}
-          ></TabBar.Item>
-          <TabBar.Item
-            icon={<MyIcon type="icon-add-cart" />}
-            selectedIcon={<MyIcon type="icon-add-cart-fill" />}
-            selected={selectedKey === 'mine'}
-            onPress={() => gotoPage('/mine', 'mine')}
-            title="自选"
-            key="mine"
-          ></TabBar.Item>
-        </TabBar>
-      </div>
-    </div>
+    </AppContext.Provider>
   )
 }

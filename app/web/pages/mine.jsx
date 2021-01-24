@@ -2,7 +2,8 @@ import { get } from 'utils/request'
 import { InputItem } from 'antd-mobile'
 import { fmtRate, fmtNumber } from 'utils/format'
 import { getEvaluateProfit } from 'utils/calc'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useContext } from 'react'
+import AppContext from 'components/AppContext'
 import { useHistory } from 'umi'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
@@ -13,7 +14,6 @@ const Mine = () => {
   const [calcData, setCalcData] = useState({})
   const [totalProfit, setTotalProfit] = useState(0)
   const [keyboardVisible, setKeyboardVisible] = useState(false)
-  const [config, setConfig] = useState({})
   const timerRef = useRef(null)
   const keyboardRef = useRef(null)
   const history = useHistory()
@@ -95,11 +95,7 @@ const Mine = () => {
     }
   }, [keyboardVisible])
 
-  useEffect(() => {
-    const config = JSON.parse(localStorage.getItem('fund-config') || '{}')
-    setConfig(config)
-  }, [])
-
+  const config = useContext(AppContext)
   return (
     <div className={sbx('page-mine')}>
       {list.length ? (
@@ -129,7 +125,7 @@ const Mine = () => {
                   <div className={sbx('row-num')}>
                     <span>
                       <InputItem
-                        disabled={config.editHoldShare}
+                        disabled={config.disabledHoldShare}
                         type="money"
                         moneyKeyboardAlign="left"
                         autoAdjustHeight

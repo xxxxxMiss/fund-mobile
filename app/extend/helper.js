@@ -41,7 +41,7 @@ exports.parseNavLang = ctx => {
 }
 
 const request = async (ctx, { url, data, method, headers = {} }) => {
-  // url = `https://api.doctorxiong.club/${path.join('v1', url)}`
+  ctx.logger.info(data)
   url = `https://api.yiduu.com/${path.join('v1', url)}`
   const res = await ctx.curl(url, {
     data,
@@ -55,9 +55,7 @@ const request = async (ctx, { url, data, method, headers = {} }) => {
       ...headers,
     },
   })
-  if (process.env.NODE_ENV != 'production') {
-    console.log('[Request Response]: ', res)
-  }
+  ctx.logger.info(res)
   if (res.status === 200) {
     return res.data
   }

@@ -94,7 +94,7 @@ export default function FundDetail() {
     localStorage.setItem('fund-selected', JSON.stringify(selected))
   }
 
-  const { manager } = data
+  const { manager = {} } = data
   const fmtlastMonthGrowth = fmtRate(data.lastMonthGrowth)
   const fmtlastThreeMonthsGrowth = fmtRate(data.lastThreeMonthsGrowth)
   const fmtlastSixMonthsGrowth = fmtRate(data.lastSixMonthsGrowth)

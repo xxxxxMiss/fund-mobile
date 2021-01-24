@@ -1,5 +1,6 @@
 import { List, Checkbox } from 'antd-mobile'
 import { useState, useCallback, useEffect } from 'react'
+import { changeConfig } from 'components/AppContext'
 const { CheckboxItem } = Checkbox
 
 export default function Sidebar() {
@@ -15,6 +16,7 @@ export default function Sidebar() {
     setConfig(prev => {
       const newConfig = { ...prev, [key]: e.target.checked }
       localStorage.setItem('fund-config', JSON.stringify(newConfig))
+      changeConfig(newConfig)
       return newConfig
     })
   }, [])
@@ -23,10 +25,10 @@ export default function Sidebar() {
     <div className={sbx('sidebar-wrapper')}>
       <List renderHeader="自定义配置">
         <CheckboxItem
-          checked={!!config.editHoldShare}
-          onChange={e => handleChange('editHoldShare', e)}
+          checked={!!config.disabledHoldShare}
+          onChange={e => handleChange('disabledHoldShare', e)}
         >
-          开启/锁定份额编辑
+          锁定份额编辑
         </CheckboxItem>
       </List>
     </div>
