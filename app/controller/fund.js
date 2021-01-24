@@ -10,6 +10,9 @@ class FundController extends Controller {
     if (res.data) {
       const restore = await ctx.helper.post(ctx, {
         url: '/config/restore',
+        headers: {
+          token: res.data,
+        },
       })
       if (restore.code != 200) {
         ctx.body = restore

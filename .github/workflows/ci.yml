@@ -39,7 +39,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
+      - name: cache node_modules
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
       - name: install project deps
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm install --unsafe-perm=true --allow-root
       - name: build web
         run: npm run build --if-present
