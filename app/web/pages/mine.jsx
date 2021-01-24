@@ -116,7 +116,11 @@ const Mine = () => {
               const fmtProfit = fmtNumber(calcData[item.code]?.[1])
 
               return (
-                <div className={sbx('card')} key={item.code}>
+                <div
+                  className={sbx('card')}
+                  key={item.code}
+                  onClick={() => history.push(`/detail?code=${item.code}`)}
+                >
                   <h3 className={sbx('name')}>
                     {item.name}
                     <span className={sbx('code')}>{item.code}</span>
