@@ -76,7 +76,7 @@ const Mine = () => {
     })
     localStorage.setItem('fund-hold', JSON.stringify(data))
     setKeyboardVisible(false)
-  }, [])
+  }, [calcData])
 
   useEffect(() => {
     let sum = 0
