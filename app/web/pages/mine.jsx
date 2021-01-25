@@ -106,8 +106,10 @@ const Mine = () => {
         <>
           <div className={sbx('profit-overview')}>
             <div className={sbx('profit-row')}>
-              预估收益：
-              <span className={sbx('profit')}>{totalProfit}</span>
+              <span>预估收益：</span>
+              <span className={sbx('profit')}>
+                {config.hiddenProfit ? '***' : totalProfit}
+              </span>
             </div>
           </div>
           <div className={sbx('list')}>
@@ -165,7 +167,7 @@ const Mine = () => {
                         color: fmtProfit.color,
                       }}
                     >
-                      {fmtProfit.text}
+                      {config.hiddenProfit ? '***' : fmtProfit.text}
                     </span>
                   </div>
                 </div>

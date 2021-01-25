@@ -46,6 +46,13 @@ export default function Sidebar() {
         >
           锁定份额编辑
         </CheckboxItem>
+
+        <CheckboxItem
+          checked={config.hiddenProfit}
+          onChange={e => handleChange('hiddenProfit', e)}
+        >
+          隐藏收益
+        </CheckboxItem>
         <List.Item
           thumb={<MyIcon type="icon-clear" />}
           arrow="horizontal"

@@ -2,6 +2,7 @@ import React from 'react'
 
 export let defaultConfig = {
   disabledHoldShare: false,
+  hiddenProfit: false,
   // more config
 }
 
