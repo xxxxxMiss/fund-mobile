@@ -117,14 +117,18 @@ const Mine = () => {
 
               return (
                 <div className={sbx('card')} key={item.code}>
-                  <h3 className={sbx('name')}>
-                    {item.name}
-                    <span className={sbx('code')}>{item.code}</span>
-                  </h3>
-                  <div className={sbx('row-text')}>
-                    <span>持有份额</span>
-                    <span>估算涨幅</span>
-                    <span>估算收益</span>
+                  <div
+                    onClick={() => history.push(`/detail?code=${item.code}`)}
+                  >
+                    <h3 className={sbx('name')}>
+                      {item.name}
+                      <span className={sbx('code')}>{item.code}</span>
+                    </h3>
+                    <div className={sbx('row-text')}>
+                      <span>持有份额</span>
+                      <span>估算涨幅</span>
+                      <span>估算收益</span>
+                    </div>
                   </div>
                   <div className={sbx('row-num')}>
                     <span>
