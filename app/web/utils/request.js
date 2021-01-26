@@ -22,7 +22,7 @@ export default function request(config) {
       return res
     }
     if (code != 200) {
-      if (isBrowser()) Toast.fail(msg || message)
+      if (isBrowser()) Toast.fail(msg || message, 0.5)
       return null
     }
     return data

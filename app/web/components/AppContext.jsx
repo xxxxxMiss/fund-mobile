@@ -3,6 +3,7 @@ import React from 'react'
 export let defaultConfig = {
   disabledHoldShare: false,
   hiddenProfit: false,
+  enableCheat: false,
   // more config
 }
 

@@ -81,14 +81,14 @@ const Home = props => {
           localStorage.setItem('fund-selected', JSON.stringify(prev))
           return [...prev]
         })
-        Toast.success('已取消自选')
+        Toast.success('已取消自选', 0.5)
       } else {
         setSelected(prev => {
           prev.push(code)
           localStorage.setItem('fund-selected', JSON.stringify(prev))
           return [...prev]
         })
-        Toast.success('添加成功')
+        Toast.success('添加成功', 0.5)
       }
     },
     [selected]

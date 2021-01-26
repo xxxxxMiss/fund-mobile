@@ -17,6 +17,7 @@ const Mine = () => {
   const timerRef = useRef(null)
   const keyboardRef = useRef(null)
   const history = useHistory()
+  const config = useContext(AppContext)
 
   const getData = list => {
     const hold = JSON.parse(localStorage.getItem('fund-hold') || '{}')
@@ -59,7 +60,13 @@ const Mine = () => {
           'hour',
           '[]'
         ) ||
-          dayjs().isBetween(dayjs().hour(13), dayjs().hour(15), 'hour', '[]'))
+          dayjs().isBetween(
+            dayjs().hour(13),
+            dayjs().hour(15),
+            'hour',
+            '[]'
+          )) &&
+        !keyboardVisible
       ) {
         fetchMyFund()
       }
@@ -87,8 +94,9 @@ const Mine = () => {
       }
       sum += num
     })
-    setTotalProfit(sum.toFixed(2))
-  }, [calcData])
+    const { text } = fmtNumber(sum.toFixed(2), false, config.enableCheat)
+    setTotalProfit(text)
+  }, [calcData, config.enableCheat])
 
   useEffect(() => {
     keyboardRef.current = document.getElementById(
@@ -99,7 +107,6 @@ const Mine = () => {
     }
   }, [keyboardVisible])
 
-  const config = useContext(AppContext)
   return (
     <div className={sbx('page-mine')}>
       {list.length ? (
@@ -114,8 +121,14 @@ const Mine = () => {
           </div>
           <div className={sbx('list')}>
             {list.map(item => {
-              const { text: expectGrowth, color } = fmtRate(item.expectGrowth)
-              const fmtProfit = fmtNumber(calcData[item.code]?.[1])
+              const { text: expectGrowth, color } = fmtRate(item.expectGrowth, {
+                isCheat: config.enableCheat,
+              })
+              const fmtProfit = fmtNumber(
+                calcData[item.code]?.[1],
+                false,
+                config.enableCheat
+              )
 
               return (
                 <div className={sbx('card')} key={item.code}>

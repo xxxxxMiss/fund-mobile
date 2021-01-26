@@ -28,7 +28,7 @@ export default function Sidebar() {
         text: '确定',
         onPress: () => {
           localStorage.clear()
-          Toast.success('清除成功')
+          Toast.success('清除成功', 0.5)
         },
       },
       {
@@ -53,6 +53,14 @@ export default function Sidebar() {
         >
           隐藏收益
         </CheckboxItem>
+
+        <CheckboxItem
+          checked={config.enableCheat}
+          onChange={e => handleChange('enableCheat', e)}
+        >
+          开启自欺欺人模式
+        </CheckboxItem>
+
         <List.Item
           thumb={<MyIcon type="icon-clear" />}
           arrow="horizontal"

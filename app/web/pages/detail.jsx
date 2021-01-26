@@ -84,11 +84,11 @@ export default function FundDetail() {
     const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
     if (isSelected) {
       selected.splice(selected.indexOf(data.code), 1)
-      Toast.success('已取消自选')
+      Toast.success('已取消自选', 0.5)
       setIsSelected(false)
     } else {
       selected.push(data.code)
-      Toast.success('已添加自选')
+      Toast.success('已添加自选', 0.5)
       setIsSelected(true)
     }
     localStorage.setItem('fund-selected', JSON.stringify(selected))

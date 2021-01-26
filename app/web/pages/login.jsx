@@ -21,7 +21,7 @@ export default function Login() {
           JSON.stringify(res.fundCode || [])
         )
         localStorage.setItem('fund-hold', JSON.stringify(res.holdShare || {}))
-        Toast.success('登录成功')
+        Toast.success('登录成功', 0.5)
         history.replace('/mine')
       }
     })
