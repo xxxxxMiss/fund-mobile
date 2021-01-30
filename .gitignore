@@ -8,7 +8,6 @@ npm-debug.log*
 yarn-error.log*
 
 # Lock
-yarn.lock
 npm-lock.json
 
 # Dist folder
