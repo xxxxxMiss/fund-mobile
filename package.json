@@ -23,6 +23,8 @@
     "@ant-design/icons": "^4.3.0",
     "@better-scroll/core": "^2.0.6",
     "@better-scroll/pull-up": "^2.0.6",
+    "@sentry/react": "^6.0.3",
+    "@sentry/tracing": "^6.0.3",
     "@umijs/preset-react": "^1.5.17",
     "antd-mobile": "^2.3.4",
     "axios": "^0.21.0",
