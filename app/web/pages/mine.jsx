@@ -18,6 +18,7 @@ const Mine = () => {
   const keyboardRef = useRef(null)
   const history = useHistory()
   const config = useContext(AppContext)
+  const [isEmpty, setIsEmtpy] = useState(false)
 
   const getData = list => {
     const hold = JSON.parse(localStorage.getItem('fund-hold') || '{}')
@@ -37,15 +38,20 @@ const Mine = () => {
   useEffect(() => {
     const fetchMyFund = () => {
       const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
-      if (!selected.length) return
+      if (!selected.length) {
+        setIsEmtpy(true)
+        return
+      }
       get('/v1/fund/getMyFund', {
         params: {
           code: selected.join(','),
         },
       }).then(list => {
-        if (list) {
+        if (list && list.length) {
           setList(list)
           getData(list)
+        } else {
+          setIsEmtpy(true)
         }
       })
     }
@@ -109,7 +115,7 @@ const Mine = () => {
 
   return (
     <div className={sbx('page-mine')}>
-      {list.length ? (
+      {!isEmpty && (
         <>
           <div className={sbx('profit-overview')}>
             <div className={sbx('profit-row')}>
@@ -188,7 +194,8 @@ const Mine = () => {
             })}
           </div>
         </>
-      ) : (
+      )}
+      {isEmpty && (
         <div className={sbx('empty-container')}>
           <div className={sbx('empty-text')}>暂无自选基金</div>
           <div className={sbx('select-tips')}>

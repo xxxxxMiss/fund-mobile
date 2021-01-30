@@ -13,20 +13,33 @@ export default function request(config) {
   const instance = axios.create()
 
   instance.interceptors.request.use(cfg => {
+    if (isBrowser()) {
+      Toast.loading('加载中...', 0)
+    }
     return cfg
   })
 
-  instance.interceptors.response.use(res => {
-    const { code, data, msg, message } = res.data
-    if (config.fullRes) {
-      return res
+  instance.interceptors.response.use(
+    res => {
+      const { code, data, msg, message } = res.data
+      if (isBrowser()) {
+        Toast.hide()
+      }
+      if (config.fullRes) {
+        return res
+      }
+      if (code != 200) {
+        if (isBrowser()) Toast.fail(msg || message, 0.5)
+        return null
+      }
+      return data
+    },
+    () => {
+      if (isBrowser()) {
+        Toast.hide()
+      }
     }
-    if (code != 200) {
-      if (isBrowser()) Toast.fail(msg || message, 0.5)
-      return null
-    }
-    return data
-  })
+  )
 
   return instance.request({ ...CONFIG, ...config })
 }
