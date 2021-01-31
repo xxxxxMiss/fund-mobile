@@ -12,8 +12,8 @@ export default function Login() {
 
   const login = useCallback(() => {
     post('/v1/fund/login', {
-      account,
-      password,
+      account: account.trim(),
+      password: password.trim(),
     }).then(res => {
       if (res) {
         localStorage.setItem(

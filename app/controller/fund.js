@@ -36,6 +36,33 @@ class FundController extends Controller {
       ctx.body = res
     }
   }
+  async restore() {
+    const { ctx } = this
+    const restore = await ctx.helper.post(ctx, {
+      url: '/config/restore',
+      headers: {
+        token: ctx.query.token,
+      },
+    })
+    if (restore.code != 200) {
+      ctx.body = restore
+    } else {
+      const { fundMemorySetting = [], fundCode = [] } = JSON.parse(
+        restore.data || '{}'
+      )
+      const holdShare = fundMemorySetting.reduce((holds, item) => {
+        holds[item.code] = item.holdShare
+        return holds
+      }, {})
+      ctx.body = {
+        code: 200,
+        data: {
+          holdShare,
+          fundCode,
+        },
+      }
+    }
+  }
   async auth() {
     const { ctx } = this
     const res = await ctx.helper.post(ctx, {

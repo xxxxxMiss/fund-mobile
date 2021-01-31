@@ -41,7 +41,7 @@ exports.parseNavLang = ctx => {
 }
 
 const request = async (ctx, { url, data, method, headers = {} }) => {
-  ctx.logger.info(data)
+  ctx.logger.info('[Request Params]', data)
   url = `https://api.yiduu.com/${path.join('v1', url)}`
   const res = await ctx.curl(url, {
     data,
@@ -55,7 +55,7 @@ const request = async (ctx, { url, data, method, headers = {} }) => {
       ...headers,
     },
   })
-  ctx.logger.info(res)
+  ctx.logger.info('[Response]', res)
   if (res.status === 200) {
     return res.data
   }

@@ -4,7 +4,7 @@ import { fmtRate, fmtNumber } from 'utils/format'
 import { getEvaluateProfit } from 'utils/calc'
 import { useState, useEffect, useRef, useCallback, useContext } from 'react'
 import AppContext from 'components/AppContext'
-import { useHistory } from 'umi'
+import { useHistory, useLocation } from 'umi'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 dayjs.extend(isBetween)
@@ -17,6 +17,7 @@ const Mine = () => {
   const timerRef = useRef(null)
   const keyboardRef = useRef(null)
   const history = useHistory()
+  const location = useLocation()
   const config = useContext(AppContext)
   const [isEmpty, setIsEmtpy] = useState(false)
 
@@ -36,6 +37,23 @@ const Mine = () => {
   }
 
   useEffect(() => {
+    // back this page from auth
+    const { token } = location.query || {}
+    const restore = () => {
+      return get('/v1/config/restore', {
+        params: {
+          token,
+        },
+      }).then(res => {
+        if (res) {
+          localStorage.setItem(
+            'fund-selected',
+            JSON.stringify(res.fundCode || [])
+          )
+          localStorage.setItem('fund-hold', JSON.stringify(res.holdShare || {}))
+        }
+      })
+    }
     const fetchMyFund = () => {
       const selected = JSON.parse(localStorage.getItem('fund-selected') || '[]')
       if (!selected.length) {
@@ -55,7 +73,11 @@ const Mine = () => {
         }
       })
     }
-    fetchMyFund()
+    if (token) {
+      restore().then(fetchMyFund)
+    } else {
+      fetchMyFund()
+    }
     timerRef.current = setInterval(() => {
       if (
         0 < dayjs().day() &&
