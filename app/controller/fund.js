@@ -36,6 +36,13 @@ class FundController extends Controller {
       ctx.body = res
     }
   }
+  async auth() {
+    const { ctx } = this
+    const res = await ctx.helper.post(ctx, {
+      url: `/oauth/render/${ctx.query.type}`,
+    })
+    ctx.body = res
+  }
   async rank() {
     const { ctx } = this
     const res = await ctx.helper.post(ctx, {

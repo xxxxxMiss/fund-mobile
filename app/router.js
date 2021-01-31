@@ -14,6 +14,7 @@ module.exports = app => {
   router.post('/v1/fund/cancel', controller.fund.delFund)
   router.get('/v1/fund/getMyFund', controller.fund.getMyFund)
   router.post('/v1/fund/login', controller.fund.login)
+  router.get('/v1/fund/auth', controller.fund.auth)
   router.post('/web-hooks', controller.webHooks.push)
   router.get('*', controller.home.index)
 }

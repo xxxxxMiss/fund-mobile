@@ -1,7 +1,7 @@
 import { InputItem, List, Button, Toast } from 'antd-mobile'
 import { MyIcon } from 'components/MyIcon'
 import { useState, useCallback } from 'react'
-import { post } from 'utils/request'
+import { post, get } from 'utils/request'
 import { useHistory } from 'umi'
 
 export default function Login() {
@@ -35,6 +35,16 @@ export default function Login() {
     }
   }, [inputType])
 
+  const handleAuth = useCallback(type => {
+    get('/v1/fund/auth', {
+      params: {
+        type,
+      },
+    }).then(authUrl => {
+      if (authUrl) window.location.href = authUrl
+    })
+  }, [])
+
   return (
     <div className={sbx('page-login')}>
       <List renderHeader={() => '登录同步PC数据'}>
@@ -65,6 +75,18 @@ export default function Login() {
       <Button onClick={login} disabled={!account || !password}>
         登录
       </Button>
+      <div className={sbx('auth-login')}>
+        <div className={sbx('auth-tips')}>三方登录</div>
+        <span className={sbx('link')} onClick={() => handleAuth('qq')}>
+          <MyIcon type="icon-qq" />
+        </span>
+        <span className={sbx('link')} onClick={() => handleAuth('github')}>
+          <MyIcon type="icon-github" />
+        </span>
+        <span className={sbx('link')} onClick={() => handleAuth('gitee')}>
+          <MyIcon type="icon-gitee" />
+        </span>
+      </div>
     </div>
   )
 }
