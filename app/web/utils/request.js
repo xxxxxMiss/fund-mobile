@@ -13,7 +13,7 @@ export default function request(config) {
   const instance = axios.create()
 
   instance.interceptors.request.use(cfg => {
-    if (isBrowser()) {
+    if (isBrowser() && (cfg.showLoading === undefined || cfg.showLoading)) {
       Toast.loading('加载中...', 0)
     }
     return cfg

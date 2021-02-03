@@ -29,6 +29,7 @@ export default function Sidebar() {
         onPress: () => {
           localStorage.clear()
           Toast.success('清除成功', 0.5)
+          window.location.reload()
         },
       },
       {

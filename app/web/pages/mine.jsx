@@ -61,6 +61,7 @@ const Mine = () => {
         return
       }
       get('/v1/fund/getMyFund', {
+        showLoading: false,
         params: {
           code: selected.join(','),
         },
