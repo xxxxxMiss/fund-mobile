@@ -42,7 +42,7 @@ exports.parseNavLang = ctx => {
 
 const request = async (ctx, { url, data, method, headers = {} }) => {
   ctx.logger.info('[Request Params]', data)
-  url = `https://api.yiduu.com/${path.join('v1', url)}`
+  url = `https://api.jrcfn.com/${path.join('v1', url)}`
   const res = await ctx.curl(url, {
     data,
     dataType: 'json',
@@ -51,7 +51,7 @@ const request = async (ctx, { url, data, method, headers = {} }) => {
     headers: {
       // Token: '217a71ac3b052446e98d3e52e512d006',
       // token: 'ykAIlw6j9d',
-      token: exports.parseCookie(ctx).token,
+      token: exports.parseCookie(ctx).token || '7d656f6a8c9a0de5',
       ...headers,
     },
   })
