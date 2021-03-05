@@ -153,10 +153,10 @@ export default function FundDetail() {
       </div>
 
       <div className={sbx('block-overview')}>
-        <div className={sbx('title')}>基金经理</div>
+        <div className={sbx('title')}>经理</div>
         <div className={sbx('manager')}>{manager.manager}</div>
         <div className={sbx('work')}>从业{manager.workTime}</div>
-        <div className={sbx('fund-size')}>管理基金规模：{manager.fundSize}</div>
+        <div className={sbx('fund-size')}>管理规模：{manager.fundSize}</div>
         <img className={sbx('avatar')} src={manager.faceImg} />
       </div>
       {/* <div className={sbx('block-chart')}>

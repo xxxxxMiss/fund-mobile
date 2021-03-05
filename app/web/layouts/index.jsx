@@ -12,7 +12,7 @@ const getTitle = location => {
   let title = ''
   switch (location.pathname) {
     case '/':
-      title = '基金排行'
+      title = '排行榜'
       break
     case '/detail':
       title = '产品详情'
@@ -108,7 +108,7 @@ export default function AppLayout(props) {
                   clear
                   onChange={value => setValue(value)}
                   value={value}
-                  placeholder="基金代码"
+                  placeholder="代码"
                   onVirtualKeyboardConfirm={handleSearch}
                   type="money"
                   moneyKeyboardAlign="left"
@@ -127,7 +127,7 @@ export default function AppLayout(props) {
             barTintColor="white"
           >
             <TabBar.Item
-              title="基金排行"
+              title="排行榜"
               key="rank"
               icon={<MyIcon type="icon-pic" />}
               selectedIcon={<MyIcon type="icon-pic-fill" />}

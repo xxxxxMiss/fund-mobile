@@ -220,7 +220,7 @@ const Mine = () => {
       )}
       {isEmpty && (
         <div className={sbx('empty-container')}>
-          <div className={sbx('empty-text')}>暂无自选基金</div>
+          <div className={sbx('empty-text')}>暂无自选</div>
           <div className={sbx('select-tips')}>
             您可以点击右上角搜索按钮添加自选，
             <br />

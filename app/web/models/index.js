@@ -7,7 +7,7 @@ const fetchRank = data => {
 export default {
   namespace: 'index',
   state: {
-    title: '基金排行',
+    title: '排行榜',
     list: [],
   },
 

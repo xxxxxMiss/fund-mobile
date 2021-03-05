@@ -140,7 +140,7 @@ const Home = props => {
   return (
     <div className={sbx('page-rank')}>
       <Helmet>
-        <title>基金排行</title>
+        <title>排行榜</title>
       </Helmet>
       <div className={sbx('list-header')}>
         <div className={sbx('filter-type')}>
